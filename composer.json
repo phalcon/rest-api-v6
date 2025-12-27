@@ -1,0 +1,66 @@
+{
+  "name": "phalcon/rest-api-v6",
+  "type": "library",
+  "description": "Sample REST API application implemented with Phalcon v6",
+  "keywords": [
+    "phalcon",
+    "framework",
+    "sample app",
+    "rest-api",
+    "rest",
+    "api"
+  ],
+  "homepage": "https://phalcon.io",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Contributors",
+      "homepage": "https://github.com/phalcon/rest-api-v6/graphs/contributors"
+    }
+  ],
+  "require": {
+    "ext-mbstring": "*",
+    "ext-pdo": "*",
+    "phalcon/phalcon": "^6.0.x-dev",
+    "robmorgan/phinx": "^0.16.10",
+    "vlucas/phpdotenv": "^5.6"
+  },
+  "require-dev": {
+    "fakerphp/faker": "^1.24",
+    "pds/composer-script-names": "^1.0",
+    "pds/skeleton": "^1.0",
+    "phpstan/phpstan": "^2.1",
+    "phpunit/phpunit": "^11.5",
+    "squizlabs/php_codesniffer": "^4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Phalcon\\Api\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Phalcon\\Api\\Tests\\": "tests/"
+    }
+  },
+  "config": {
+    "preferred-install": "dist",
+    "sort-packages": true,
+    "optimize-autoloader": true,
+    "cache-dir": ".composer"
+  },
+  "replace": {
+    "symfony/polyfill-php80": "*",
+    "symfony/polyfill-ctype": "*",
+    "symfony/polyfill-mbstring": "*"
+  },
+  "scripts": {
+    "analyze": "vendor/bin/phpstan analyze -c phpstan.neon",
+    "cs": "vendor/bin/phpcs --standard=phpcs.xml",
+    "cs-fix": "vendor/bin/phpcbf --standard=phpcs.xml",
+    "migrate": "vendor/bin/phinx migrate",
+    "test-unit": "vendor/bin/phpunit -c phpunit.xml.dist --display-all-issues",
+    "test-unit-coverage": "vendor/bin/phpunit -c phpunit.xml.dist --coverage-clover tests/_output/cov.xml --display-all-issues",
+    "test-unit-coverage-html": "vendor/bin/phpunit -c phpunit.xml.dist --coverage-html tests/_output/coverage --display-all-issues"
+  }
+}
