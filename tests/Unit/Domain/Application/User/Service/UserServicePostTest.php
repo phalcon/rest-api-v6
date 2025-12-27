@@ -16,15 +16,18 @@ namespace Phalcon\Api\Tests\Unit\Domain\Application\User\Service;
 use DateTimeImmutable;
 use PayloadInterop\DomainStatus;
 use PDOException;
+use Phalcon\Api\Domain\Application\User\Handler\UserPostHandler;
 use Phalcon\Api\Domain\Application\User\Service\UserPostService;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Mapper\UserMapper;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Repository\UserRepository;
+use Phalcon\Api\Domain\Infrastructure\Env\EnvManager;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
 use Phalcon\Support\Registry;
 
 use function array_key_first;
 use function str_starts_with;
 use function strip_tags;
+use function uniqid;
 
 final class UserServicePostTest extends AbstractUnitTestCase
 {
@@ -84,6 +87,7 @@ final class UserServicePostTest extends AbstractUnitTestCase
 
     public function testServiceFailurePdoError(): void
     {
+        $message        = uniqid('pdo-error-');
         $userRepository = $this
             ->getMockBuilder(UserRepository::class)
             ->disableOriginalConstructor()
@@ -96,7 +100,7 @@ final class UserServicePostTest extends AbstractUnitTestCase
         ;
         $userRepository
             ->method('insert')
-            ->willThrowException(new PDOException('abcde'))
+            ->willThrowException(new PDOException($message))
         ;
 
         $this->container->setShared(UserRepository::class, $userRepository);
@@ -107,6 +111,8 @@ final class UserServicePostTest extends AbstractUnitTestCase
         $userMapper = $this->container->get(UserMapper::class);
         /** @var Registry $registry */
         $registry = $this->container->get(Registry::class);
+        /** @var EnvManager $env */
+        $env = $this->container->get(EnvManager::class);
 
         $userData           = $this->getNewUserData();
         $userData['usr_id'] = 1;
@@ -134,9 +140,24 @@ final class UserServicePostTest extends AbstractUnitTestCase
 
         $errors = $actual['errors'];
 
-        $expected = [['Cannot create database record: abcde']];
+        $expected = [['Cannot create database record: ' . $message]];
         $actual   = $errors;
         $this->assertSame($expected, $actual);
+        /**
+         * Also check the logger if the message was logged
+         */
+        /** @var string $logName */
+        $logName = $env->get('LOG_FILENAME', 'rest-api');
+        /** @var string $logPath */
+        $logPath = $env->get('LOG_PATH', 'storage/logs/');
+        $logFile = $env->appPath($logPath) . '/' . $logName . '.log';
+
+        $message = sprintf(
+            '[error] %s: %s',
+            UserPostHandler::class,
+            $message
+        );
+        $this->assertFileContentsContains($logFile, $message);
     }
 
     public function testServiceFailureValidation(): void

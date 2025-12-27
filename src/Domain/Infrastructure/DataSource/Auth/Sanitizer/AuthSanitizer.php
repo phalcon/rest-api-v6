@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Phalcon\Api\Domain\Infrastructure\DataSource\Auth\Sanitizer;
 
 use Phalcon\Api\Domain\Infrastructure\DataSource\AbstractSanitizer;
-use Phalcon\Api\Domain\Infrastructure\Enums\Sanitizer\AuthSanitizerEnum;
 
 final class AuthSanitizer extends AbstractSanitizer
 {

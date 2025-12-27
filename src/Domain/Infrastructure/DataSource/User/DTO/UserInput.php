@@ -14,18 +14,14 @@ declare(strict_types=1);
 namespace Phalcon\Api\Domain\Infrastructure\DataSource\User\DTO;
 
 use Phalcon\Api\Domain\ADR\InputTypes;
-use Phalcon\Api\Domain\Infrastructure\DataSource\AbstractValueObject;
-use Phalcon\Api\Domain\Infrastructure\DataSource\User\UserTypes;
-
-use function get_object_vars;
+use Phalcon\Api\Domain\Infrastructure\DataSource\AbstractInputValueObject;
 
 /**
  * Value object for input
  *
  * @phpstan-import-type TUserInput from InputTypes
- * @phpstan-import-type TUser from UserTypes
  */
-final class UserInput extends AbstractValueObject
+final class UserInput extends AbstractInputValueObject
 {
     /**
      * @param int         $id
@@ -65,17 +61,6 @@ final class UserInput extends AbstractValueObject
         public readonly ?string $updatedDate,
         public readonly ?int $updatedUserId,
     ) {
-    }
-
-    /**
-     * @return TUser
-     */
-    public function toArray(): array
-    {
-        /** @var TUser $vars */
-        $vars = get_object_vars($this);
-
-        return $vars;
     }
 
     /**

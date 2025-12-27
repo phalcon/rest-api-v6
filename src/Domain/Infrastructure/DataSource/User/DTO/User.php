@@ -13,16 +13,31 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Domain\Infrastructure\DataSource\User\DTO;
 
-use Phalcon\Api\Domain\Infrastructure\DataSource\User\UserTypes;
+use Phalcon\Api\Domain\Infrastructure\DataSource\AbstractValueObject;
 
-use function get_object_vars;
 use function trim;
 
-/**
- * @phpstan-import-type TUser from UserTypes
- */
-final readonly class User
+final class User extends AbstractValueObject
 {
+    /**
+     * @param int         $id
+     * @param int         $status
+     * @param string      $email
+     * @param string      $password
+     * @param string|null $namePrefix
+     * @param string|null $nameFirst
+     * @param string|null $nameMiddle
+     * @param string|null $nameLast
+     * @param string|null $nameSuffix
+     * @param string|null $issuer
+     * @param string|null $tokenPassword
+     * @param string|null $tokenId
+     * @param string|null $preferences
+     * @param string|null $createdDate
+     * @param int|null    $createdUserId
+     * @param string|null $updatedDate
+     * @param int|null    $updatedUserId
+     */
     public function __construct(
         public int $id,
         public int $status,
@@ -44,21 +59,13 @@ final readonly class User
     ) {
     }
 
+    /**
+     * @return string
+     */
     public function fullName(): string
     {
         return trim(
             ($this->nameLast ?? '') . ', ' . ($this->nameFirst ?? '') . ' ' . ($this->nameMiddle ?? '')
         );
-    }
-
-    /**
-     * @return TUser
-     */
-    public function toArray(): array
-    {
-        /** @var TUser $vars */
-        $vars = get_object_vars($this);
-
-        return $vars;
     }
 }

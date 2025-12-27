@@ -20,6 +20,7 @@ use Phalcon\Api\Domain\Infrastructure\Constants\Dates;
 use Phalcon\Api\Domain\Infrastructure\Container;
 use Phalcon\Api\Domain\Infrastructure\Encryption\Security;
 use Phalcon\Api\Domain\Infrastructure\Enums\Common\JWTEnum;
+use Phalcon\Api\Tests\Fixtures\Domain\Migrations\CompaniesMigration;
 use Phalcon\Api\Tests\Fixtures\Domain\Migrations\UsersMigration;
 use Phalcon\DataMapper\Pdo\Connection;
 use Phalcon\Encryption\Security\JWT\Builder;
@@ -95,6 +96,71 @@ abstract class AbstractUnitTestCase extends TestCase
         }
 
         return $this->connection;
+    }
+
+    /**
+     * @param CompaniesMigration $migration
+     * @param array              $fields
+     *
+     * @return array
+     */
+    public function getNewCompany(CompaniesMigration $migration, array $fields = []): array
+    {
+        $companyData = $this->getNewCompanyData($fields);
+        $companyId   = $migration->insert(
+            null,
+            $companyData['com_name'],
+            $companyData['com_email'],
+            $companyData['com_phone'],
+            $companyData['com_website'],
+            $companyData['com_address_line_1'],
+            $companyData['com_address_line_2'],
+            $companyData['com_city'],
+            $companyData['com_state_province'],
+            $companyData['com_zip_code'],
+            $companyData['com_country'],
+            $companyData['com_created_date'],
+            $companyData['com_created_usr_id'],
+            $companyData['com_updated_date'],
+            $companyData['com_updated_usr_id'],
+        );
+
+        $dbUser = $this->getFromDatabase(
+            'co_companies',
+            [
+                'com_id' => $companyId,
+            ]
+        );
+
+        return $dbUser[0];
+    }
+
+    /**
+     * @param array $fields
+     *
+     * @return array
+     */
+    public function getNewCompanyData(array $fields = []): array
+    {
+        $faker = Factory::create();
+
+        return [
+            'com_id'             => 0,
+            'com_name'           => $fields['com_name'] ?? $faker->company(),
+            'com_email'          => $fields['com_email'] ?? $faker->safeEmail(),
+            'com_phone'          => $fields['com_phone'] ?? $faker->phoneNumber(),
+            'com_website'        => $fields['com_website'] ?? $faker->domainName(),
+            'com_address_line_1' => $fields['com_address_line_1'] ?? $faker->streetAddress(),
+            'com_address_line_2' => $fields['com_address_line_2'] ?? $faker->streetAddress(),
+            'com_city'           => $fields['com_city'] ?? $faker->city(),
+            'com_state_province' => $fields['com_state_province'] ?? $faker->city(),
+            'com_zip_code'       => $fields['com_zip_code'] ?? $faker->postcode(),
+            'com_country'        => $fields['com_country'] ?? $faker->countryISOAlpha3(),
+            'com_created_date'   => $fields['com_created_date'] ?? $faker->date(Dates::DATE_TIME_FORMAT),
+            'com_created_usr_id' => $fields['com_created_usr_id'] ?? 0,
+            'com_updated_date'   => $fields['com_updated_date'] ?? $faker->date(Dates::DATE_TIME_FORMAT),
+            'com_updated_usr_id' => $fields['com_updated_usr_id'] ?? 0,
+        ];
     }
 
     /**

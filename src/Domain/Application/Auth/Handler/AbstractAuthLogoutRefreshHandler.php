@@ -15,6 +15,7 @@ namespace Phalcon\Api\Domain\Application\Auth\Handler;
 
 use Phalcon\Api\Domain\ADR\InputTypes;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\HandlerInterface;
+use Phalcon\Api\Domain\Infrastructure\DataSource\Auth\Transformer\AuthTransformer;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Validation\ValidatorInterface;
 use Phalcon\Api\Domain\Infrastructure\Encryption\TokenManagerInterface;
 
@@ -25,10 +26,12 @@ abstract class AbstractAuthLogoutRefreshHandler implements HandlerInterface
 {
     /**
      * @param TokenManagerInterface $tokenManager
+     * @param AuthTransformer       $transformer
      * @param ValidatorInterface    $validator
      */
     public function __construct(
         protected readonly TokenManagerInterface $tokenManager,
+        protected readonly AuthTransformer $transformer,
         protected readonly ValidatorInterface $validator,
     ) {
     }

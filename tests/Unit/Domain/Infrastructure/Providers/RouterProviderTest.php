@@ -46,6 +46,26 @@ final class RouterProviderTest extends AbstractUnitTestCase
             ],
             [
                 'method'  => 'DELETE',
+                'pattern' => '/company',
+            ],
+            [
+                'method'  => 'GET',
+                'pattern' => '/company',
+            ],
+            [
+                'method'  => 'GET',
+                'pattern' => '/company/all',
+            ],
+            [
+                'method'  => 'POST',
+                'pattern' => '/company',
+            ],
+            [
+                'method'  => 'PUT',
+                'pattern' => '/company',
+            ],
+            [
+                'method'  => 'DELETE',
                 'pattern' => '/user',
             ],
             [

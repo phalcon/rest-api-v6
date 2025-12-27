@@ -16,13 +16,13 @@ namespace Phalcon\Api\Domain\Infrastructure\Enums\Container;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\CommandBus;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\ContainerHandlerLocator;
 use Phalcon\Api\Domain\Infrastructure\Container;
+use Phalcon\Api\Domain\Infrastructure\DataSource\Transformer\Transformer;
 use Phalcon\Api\Domain\Infrastructure\Encryption\JWTToken;
 use Phalcon\Api\Domain\Infrastructure\Encryption\TokenCache;
 use Phalcon\Api\Domain\Infrastructure\Encryption\TokenManager;
 use Phalcon\Api\Domain\Infrastructure\Env\EnvManager;
 use Phalcon\Api\Responder\JsonResponder;
 use Phalcon\Cache\Cache;
-use Phalcon\Events\Manager as EventsManager;
 use Phalcon\Http\Request;
 use Phalcon\Http\Response;
 use Phalcon\Mvc\Router;
@@ -34,7 +34,6 @@ use Phalcon\Support\Registry;
 enum CommonDefinitionsEnum: string implements DefinitionsEnumInterface
 {
     case CommandBus      = CommandBus::class;
-    case EventsManager   = Container::EVENTS_MANAGER;
     case EnvManager      = EnvManager::class;
     case JsonResponder   = JsonResponder::class;
     case JWTToken        = JWTToken::class;
@@ -44,6 +43,7 @@ enum CommonDefinitionsEnum: string implements DefinitionsEnumInterface
     case Request         = Container::REQUEST;
     case Response        = Container::RESPONSE;
     case Router          = Container::ROUTER;
+    case Transformer     = Transformer::class;
 
     /**
      * @return TService
@@ -52,7 +52,7 @@ enum CommonDefinitionsEnum: string implements DefinitionsEnumInterface
     {
         return match ($this) {
             self::CommandBus      => [
-                'className' => CommandBus::class,
+                'className' => $this->value,
                 'arguments' => [
                     [
                         'type' => 'service',
@@ -60,28 +60,14 @@ enum CommonDefinitionsEnum: string implements DefinitionsEnumInterface
                     ],
                 ],
             ],
-            self::EventsManager   => [
-                'className' => EventsManager::class,
-                'calls'     => [
-                    [
-                        'method'    => 'enablePriorities',
-                        'arguments' => [
-                            [
-                                'type'  => 'parameter',
-                                'value' => true,
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-            self::EnvManager      => [
-                'className' => EnvManager::class,
-            ],
-            self::JsonResponder   => [
-                'className' => JsonResponder::class,
+            self::EnvManager,
+            self::JsonResponder,
+            self::Registry,
+            self::Transformer     => [
+                'className' => $this->value,
             ],
             self::JWTToken        => [
-                'className' => JWTToken::class,
+                'className' => $this->value,
                 'arguments' => [
                     [
                         'type' => 'service',
@@ -90,7 +76,7 @@ enum CommonDefinitionsEnum: string implements DefinitionsEnumInterface
                 ],
             ],
             self::JWTTokenCache   => [
-                'className' => TokenCache::class,
+                'className' => $this->value,
                 'arguments' => [
                     [
                         'type' => 'service',
@@ -99,7 +85,7 @@ enum CommonDefinitionsEnum: string implements DefinitionsEnumInterface
                 ],
             ],
             self::JWTTokenManager => [
-                'className' => TokenManager::class,
+                'className' => $this->value,
                 'arguments' => [
                     [
                         'type' => 'service',
@@ -114,9 +100,6 @@ enum CommonDefinitionsEnum: string implements DefinitionsEnumInterface
                         'name' => JWTToken::class,
                     ],
                 ],
-            ],
-            self::Registry        => [
-                'className' => Registry::class,
             ],
             self::Request         => [
                 'className' => Request::class,

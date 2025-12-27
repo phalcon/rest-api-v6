@@ -15,7 +15,6 @@ namespace Phalcon\Api\Domain\Infrastructure\DataSource\User\Mapper;
 
 use Phalcon\Api\Domain\Application\User\Command\UserPutCommand;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\CommandInterface;
-use Phalcon\Api\Domain\Infrastructure\DataSource\Interface\MapperInterface;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\DTO\User;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\UserTypes;
 
@@ -24,10 +23,12 @@ use Phalcon\Api\Domain\Infrastructure\DataSource\User\UserTypes;
  * @phpstan-import-type TUserDbRecord from UserTypes
  * @phpstan-import-type TUserDomainToDbRecord from UserTypes
  */
-final class UserMapper implements MapperInterface
+final class UserMapper implements UserMapperInterface
 {
     /**
      * Map Domain User -> DB row (usr_*)
+     *
+     * @param CommandInterface $user
      *
      * @return TUserDomainToDbRecord
      */
@@ -80,34 +81,6 @@ final class UserMapper implements MapperInterface
             isset($row['usr_created_usr_id']) ? (int)$row['usr_created_usr_id'] : null,
             $row['usr_updated_date'] ?? null,
             isset($row['usr_updated_usr_id']) ? (int)$row['usr_updated_usr_id'] : null,
-        );
-    }
-
-    /**
-     * Map input row -> Domain User
-     *
-     * @param TUser $row
-     */
-    public function input(array $row): User
-    {
-        return new User(
-            $row['id'],
-            $row['status'],
-            (string)$row['email'],
-            (string)$row['password'],
-            $row['namePrefix'],
-            $row['nameFirst'],
-            $row['nameMiddle'],
-            $row['nameLast'],
-            $row['nameSuffix'],
-            $row['issuer'],
-            $row['tokenPassword'],
-            $row['tokenId'],
-            $row['preferences'],
-            $row['createdDate'],
-            $row['createdUserId'],
-            $row['updatedDate'],
-            $row['updatedUserId'],
         );
     }
 }

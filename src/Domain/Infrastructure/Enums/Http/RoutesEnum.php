@@ -16,6 +16,11 @@ namespace Phalcon\Api\Domain\Infrastructure\Enums\Http;
 use Phalcon\Api\Domain\Application\Auth\Service\AuthLoginPostService;
 use Phalcon\Api\Domain\Application\Auth\Service\AuthLogoutPostService;
 use Phalcon\Api\Domain\Application\Auth\Service\AuthRefreshPostService;
+use Phalcon\Api\Domain\Application\Company\Service\CompanyDeleteService;
+use Phalcon\Api\Domain\Application\Company\Service\CompanyGetManyService;
+use Phalcon\Api\Domain\Application\Company\Service\CompanyGetService;
+use Phalcon\Api\Domain\Application\Company\Service\CompanyPostService;
+use Phalcon\Api\Domain\Application\Company\Service\CompanyPutService;
 use Phalcon\Api\Domain\Application\User\Service\UserDeleteService;
 use Phalcon\Api\Domain\Application\User\Service\UserGetService;
 use Phalcon\Api\Domain\Application\User\Service\UserPostService;
@@ -52,6 +57,12 @@ enum RoutesEnum: int
     case authLogoutPost  = 12;
     case authRefreshPost = 13;
 
+    case companyDelete  = 31;
+    case companyGet     = 32;
+    case companyGetMany = 33;
+    case companyPost    = 34;
+    case companyPut     = 35;
+
     case userDelete = 21;
     case userGet    = 22;
     case userPost   = 23;
@@ -74,9 +85,14 @@ enum RoutesEnum: int
             self::authLoginPost,
             self::authLogoutPost,
             self::authRefreshPost,
+            self::companyPost,
             self::userPost   => self::POST,
+            self::companyDelete,
             self::userDelete => self::DELETE,
+            self::companyGet,
+            self::companyGetMany,
             self::userGet    => self::GET,
+            self::companyPut,
             self::userPut    => self::PUT,
         };
     }
@@ -106,6 +122,11 @@ enum RoutesEnum: int
             self::authLoginPost,
             self::authLogoutPost,
             self::authRefreshPost => 'auth',
+            self::companyDelete,
+            self::companyGet,
+            self::companyGetMany,
+            self::companyPost,
+            self::companyPut      => 'company',
             self::userDelete,
             self::userGet,
             self::userPost,
@@ -121,6 +142,11 @@ enum RoutesEnum: int
             self::authLoginPost   => AuthLoginPostService::class,
             self::authLogoutPost  => AuthLogoutPostService::class,
             self::authRefreshPost => AuthRefreshPostService::class,
+            self::companyDelete   => CompanyDeleteService::class,
+            self::companyGet      => CompanyGetService::class,
+            self::companyGetMany  => CompanyGetManyService::class,
+            self::companyPost     => CompanyPostService::class,
+            self::companyPut      => CompanyPutService::class,
             self::userDelete      => UserDeleteService::class,
             self::userGet         => UserGetService::class,
             self::userPost        => UserPostService::class,
@@ -137,10 +163,8 @@ enum RoutesEnum: int
             self::authLoginPost   => '/login',
             self::authLogoutPost  => '/logout',
             self::authRefreshPost => '/refresh',
-            self::userDelete,
-            self::userGet,
-            self::userPost,
-            self::userPut         => '',
+            self::companyGetMany  => '/all',
+            default               => '',
         };
     }
 }

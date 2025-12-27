@@ -71,7 +71,34 @@ services:
     networks:
       - app-network
     environment:
-      - PHP_IDE_CONFIG=serverName=rest-api-app-83
+      - PHP_IDE_CONFIG=serverName=rest-api-app-84
+      - APP_ENV=development
+      - APP_ENV_ADAPTER=dotenv
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/fpm-ping"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+  app-8.5:
+    build:
+      dockerfile: ./resources/docker/Dockerfile
+      args:
+        PHP_VERSION: 8.5
+    hostname: rest-api-app-85
+    container_name: "${PROJECT_NAME}-api-8.5"
+    tty: true
+    working_dir: /app
+    volumes:
+      - ./:/app
+    depends_on:
+      - app-db
+      - app-cache
+    networks:
+      - app-network
+    environment:
+      - PHP_IDE_CONFIG=serverName=rest-api-app-85
       - APP_ENV=development
       - APP_ENV_ADAPTER=dotenv
     healthcheck:

@@ -29,6 +29,26 @@ namespace Phalcon\Api\Domain\ADR;
  *     token?: string
  * }
  *
+ * @phpstan-type TCompanyInput array{
+ *     id?: int,
+ *     name?: string,
+ *     phone?: string,
+ *     email?: string,
+ *     website?: string,
+ *     addressLine1?: string,
+ *     addressLine2?: string,
+ *     city?: string,
+ *     stateProvince?: string,
+ *     zipCode?: string,
+ *     country?: string,
+ *     createdDate?: string,
+ *     createdUserId?: int,
+ *     updatedDate?: string,
+ *     updatedUserId?: int,
+ *     page?: int,
+ *     perPage?: int
+ * }
+ *
  * @phpstan-type TUserInput array{
  *     id?: int,
  *     status?: int,

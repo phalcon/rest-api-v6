@@ -17,15 +17,19 @@ use Phalcon\Api\Domain\ADR\Payload;
 use Phalcon\Api\Domain\Application\User\Command\UserGetCommand;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\CommandInterface;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\HandlerInterface;
+use Phalcon\Api\Domain\Infrastructure\DataSource\Transformer\Transformer;
+use Phalcon\Api\Domain\Infrastructure\DataSource\User\DTO\User;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Repository\UserRepositoryInterface;
 
-final class UserGetHandler implements HandlerInterface
+final readonly class UserGetHandler implements HandlerInterface
 {
     /**
      * @param UserRepositoryInterface $repository
+     * @param Transformer<User>       $transformer
      */
     public function __construct(
-        private readonly UserRepositoryInterface $repository,
+        private UserRepositoryInterface $repository,
+        private Transformer $transformer,
     ) {
     }
 
@@ -48,7 +52,7 @@ final class UserGetHandler implements HandlerInterface
             $user = $this->repository->findById($userId);
 
             if (null !== $user) {
-                return Payload::success([$user->id => $user->toArray()]);
+                return Payload::success($this->transformer->get($user));
             }
         }
 

@@ -18,6 +18,7 @@ use Phalcon\Api\Domain\ADR\Payload;
 use Phalcon\Api\Domain\Application\Auth\Command\AuthLoginPostCommand;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\CommandInterface;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\HandlerInterface;
+use Phalcon\Api\Domain\Infrastructure\DataSource\Auth\Transformer\AuthTransformer;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Repository\UserRepositoryInterface;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Validation\ValidatorInterface;
 use Phalcon\Api\Domain\Infrastructure\Encryption\Security;
@@ -27,19 +28,21 @@ use Phalcon\Api\Domain\Infrastructure\Enums\Http\HttpCodesEnum;
 /**
  * @phpstan-import-type TAuthLoginInput from InputTypes
  */
-final class AuthLoginPostHandler implements HandlerInterface
+final readonly class AuthLoginPostHandler implements HandlerInterface
 {
     /**
      * @param UserRepositoryInterface $repository
      * @param TokenManagerInterface   $tokenManager
+     * @param AuthTransformer         $transformer
      * @param Security                $security
      * @param ValidatorInterface      $validator
      */
     public function __construct(
-        private readonly UserRepositoryInterface $repository,
-        private readonly TokenManagerInterface $tokenManager,
-        private readonly Security $security,
-        private readonly ValidatorInterface $validator
+        private UserRepositoryInterface $repository,
+        private TokenManagerInterface $tokenManager,
+        private AuthTransformer $transformer,
+        private Security $security,
+        private ValidatorInterface $validator
     ) {
     }
 
@@ -87,22 +90,6 @@ final class AuthLoginPostHandler implements HandlerInterface
          */
         $tokens = $this->tokenManager->issue($domainUser);
 
-        /**
-         * Construct the response
-         */
-        $results = [
-            'authenticated' => true,
-            'user'          => [
-                'id'    => $domainUser->id,
-                'name'  => $domainUser->fullName(),
-                'email' => $domainUser->email,
-            ],
-            'jwt'           => [
-                'token'        => $tokens['token'],
-                'refreshToken' => $tokens['refreshToken'],
-            ],
-        ];
-
-        return Payload::success($results);
+        return Payload::success($this->transformer->login($domainUser, $tokens));
     }
 }

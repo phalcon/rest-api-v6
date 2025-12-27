@@ -26,7 +26,8 @@ use Phalcon\Api\Domain\Infrastructure\CommandBus\CommandBusInterface;
 final readonly class AuthFacade
 {
     /**
-     * @param CommandBusInterface $bus
+     * @param CommandBusInterface         $bus
+     * @param AuthCommandFactoryInterface $factory
      */
     public function __construct(
         private CommandBusInterface $bus,

@@ -25,6 +25,7 @@ use Phalcon\Api\Domain\Application\User\Service\UserPostService;
 use Phalcon\Api\Domain\Application\User\Service\UserPutService;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\CommandBus;
 use Phalcon\Api\Domain\Infrastructure\Container;
+use Phalcon\Api\Domain\Infrastructure\DataSource\Transformer\Transformer;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Mapper\UserMapper;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Repository\UserRepository;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Sanitizer\UserSanitizer;
@@ -63,7 +64,7 @@ enum UserDefinitionsEnum: string implements DefinitionsEnumInterface
     {
         return match ($this) {
             self::UserCommandFactory  => [
-                'className' => UserCommandFactory::class,
+                'className' => $this->value,
                 'arguments' => [
                     [
                         'type' => 'service',
@@ -71,12 +72,20 @@ enum UserDefinitionsEnum: string implements DefinitionsEnumInterface
                     ],
                 ],
             ],
-            self::UserDelete          => $this->getService(UserDeleteService::class),
-            self::UserGet             => $this->getService(UserGetService::class),
-            self::UserPost            => $this->getService(UserPostService::class),
-            self::UserPut             => $this->getService(UserPutService::class),
+            self::UserDelete,
+            self::UserGet,
+            self::UserPost,
+            self::UserPut             => [
+                'className' => $this->value,
+                'arguments' => [
+                    [
+                        'type' => 'service',
+                        'name' => UserFacade::class,
+                    ],
+                ],
+            ],
             self::UserFacade          => [
-                'className' => UserFacade::class,
+                'className' => $this->value,
                 'arguments' => [
                     [
                         'type' => 'service',
@@ -88,37 +97,33 @@ enum UserDefinitionsEnum: string implements DefinitionsEnumInterface
                     ],
                 ],
             ],
-            self::UserDeleteHandler   => [
-                'className' => UserDeleteHandler::class,
+            self::UserDeleteHandler,
+            self::UserGetHandler      => [
+                'className' => $this->value,
                 'arguments' => [
                     [
                         'type' => 'service',
                         'name' => UserRepository::class,
                     ],
-                ],
-            ],
-            self::UserGetHandler      => [
-                'className' => UserGetHandler::class,
-                'arguments' => [
                     [
                         'type' => 'service',
-                        'name' => UserRepository::class,
+                        'name' => Transformer::class,
                     ],
                 ],
             ],
             self::UserPostHandler     => $this->getServicePutPost(
-                UserPostHandler::class,
+                $this->value,
                 UserValidator::class
             ),
             self::UserPutHandler      => $this->getServicePutPost(
-                UserPutHandler::class,
+                $this->value,
                 UserValidatorUpdate::class
             ),
             self::UserMapper          => [
-                'className' => UserMapper::class,
+                'className' => $this->value,
             ],
             self::UserRepository      => [
-                'className' => UserRepository::class,
+                'className' => $this->value,
                 'arguments' => [
                     [
                         'type' => 'service',
@@ -131,7 +136,7 @@ enum UserDefinitionsEnum: string implements DefinitionsEnumInterface
                 ],
             ],
             self::UserSanitizer       => [
-                'className' => UserSanitizer::class,
+                'className' => $this->value,
                 'arguments' => [
                     [
                         'type' => 'service',
@@ -139,32 +144,27 @@ enum UserDefinitionsEnum: string implements DefinitionsEnumInterface
                     ],
                 ],
             ],
-            self::UserValidator       => $this->getServiceValidator(UserValidator::class),
-            self::UserValidatorUpdate => $this->getServiceValidator(UserValidatorUpdate::class),
+            self::UserValidator,
+            self::UserValidatorUpdate => [
+                'className' => $this->value,
+                'arguments' => [
+                    [
+                        'type' => 'service',
+                        'name' => Validation::class,
+                    ],
+                ],
+            ],
         };
     }
 
     public function isShared(): bool
     {
-        return false;
-    }
-
-    /**
-     * @param class-string $className
-     *
-     * @return TService
-     */
-    private function getService(string $className): array
-    {
-        return [
-            'className' => $className,
-            'arguments' => [
-                [
-                    'type' => 'service',
-                    'name' => UserFacade::class,
-                ],
-            ],
-        ];
+        return match ($this) {
+            self::UserMapper,
+            self::UserRepository,
+            self::UserSanitizer => true,
+            default             => false,
+        };
     }
 
     /**
@@ -192,29 +192,19 @@ enum UserDefinitionsEnum: string implements DefinitionsEnumInterface
                 ],
                 [
                     'type' => 'service',
+                    'name' => Container::EVENTS_MANAGER,
+                ],
+                [
+                    'type' => 'service',
+                    'name' => Transformer::class,
+                ],
+                [
+                    'type' => 'service',
                     'name' => Registry::class,
                 ],
                 [
                     'type' => 'service',
                     'name' => Security::class,
-                ],
-            ],
-        ];
-    }
-
-    /**
-     * @param class-string $className
-     *
-     * @return TService
-     */
-    private function getServiceValidator(string $className): array
-    {
-        return [
-            'className' => $className,
-            'arguments' => [
-                [
-                    'type' => 'service',
-                    'name' => Validation::class,
                 ],
             ],
         ];

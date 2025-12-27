@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Domain\Infrastructure\DataSource\Validation;
 
+use Phalcon\Di\Exception as DIException;
 use Phalcon\Filter\Validation;
 use Phalcon\Filter\Validation\Validator\Numericality;
 
@@ -31,6 +32,7 @@ final class AbsInt extends Numericality
      *
      * @return bool
      * @throws Validation\Exception
+     * @throws DIException
      */
     public function validate(Validation $validation, string $field): bool
     {

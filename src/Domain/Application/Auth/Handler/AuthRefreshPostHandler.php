@@ -49,9 +49,6 @@ final class AuthRefreshPostHandler extends AbstractAuthLogoutRefreshHandler
 
         $tokens = $this->tokenManager->refresh($domainUser);
 
-        return Payload::success([
-            'token'        => $tokens['token'],
-            'refreshToken' => $tokens['refreshToken'],
-        ]);
+        return Payload::success($this->transformer->refresh($tokens));
     }
 }

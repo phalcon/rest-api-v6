@@ -17,18 +17,22 @@ use Phalcon\Api\Domain\Infrastructure\CommandBus\ContainerHandlerLocator;
 use Phalcon\Api\Domain\Infrastructure\Constants\Cache as CacheConstants;
 use Phalcon\Api\Domain\Infrastructure\Enums\Container\AuthDefinitionsEnum;
 use Phalcon\Api\Domain\Infrastructure\Enums\Container\CommonDefinitionsEnum;
+use Phalcon\Api\Domain\Infrastructure\Enums\Container\CompanyDefinitionsEnum;
 use Phalcon\Api\Domain\Infrastructure\Enums\Container\DefinitionsEnumInterface;
 use Phalcon\Api\Domain\Infrastructure\Enums\Container\UserDefinitionsEnum;
 use Phalcon\Api\Domain\Infrastructure\Env\EnvManager;
+use Phalcon\Api\Domain\Infrastructure\Listeners\DbErrorListener;
 use Phalcon\Cache\AdapterFactory;
 use Phalcon\Cache\Cache;
 use Phalcon\DataMapper\Pdo\Connection;
 use Phalcon\Di\Di;
 use Phalcon\Di\Service;
+use Phalcon\Events\Manager as EventsManager;
 use Phalcon\Filter\FilterFactory;
 use Phalcon\Logger\Adapter\Stream;
 use Phalcon\Logger\Logger;
 use Phalcon\Storage\SerializerFactory;
+use Psr\Log\LoggerInterface;
 
 use function sprintf;
 
@@ -87,6 +91,7 @@ class Container extends Di
         $services = [
             Cache::class                   => $this->getServiceCache(),
             Connection::class              => $this->getServiceConnection(),
+            self::EVENTS_MANAGER           => $this->getServiceEventsManager(),
             self::FILTER                   => $this->getServiceFilter(),
             Logger::class                  => $this->getServiceLogger(),
             ContainerHandlerLocator::class => $this->getServiceHandlerLocator(),
@@ -99,6 +104,10 @@ class Container extends Di
          * Auth related services
          */
         $services = $this->registerFromEnum(AuthDefinitionsEnum::class, $services);
+        /**
+         * Company related services
+         */
+        $services = $this->registerFromEnum(CompanyDefinitionsEnum::class, $services);
         /**
          * User related services
          */
@@ -190,6 +199,29 @@ class Container extends Di
                     [],
                     $queries
                 );
+            },
+            true
+        );
+    }
+
+    /**
+     * @return Service
+     */
+    private function getServiceEventsManager(): Service
+    {
+        return new Service(
+            function () {
+                $evManager = new EventsManager();
+                $evManager->enablePriorities(true);
+
+                /** @var LoggerInterface $logger */
+                $logger   = $this->getShared(Logger::class);
+                $listener = new DbErrorListener($logger);
+
+                $evManager->attach('user', $listener);
+                $evManager->attach('company', $listener);
+
+                return $evManager;
             },
             true
         );

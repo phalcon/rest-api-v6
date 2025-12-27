@@ -15,7 +15,6 @@ namespace Phalcon\Api\Tests\Unit\Domain\Infrastructure\DataSource\User\Validator
 
 use Faker\Factory as FakerFactory;
 use Phalcon\Api\Domain\Application\User\Command\UserCommandFactory;
-use Phalcon\Api\Domain\Infrastructure\DataSource\User\Sanitizer\UserSanitizer;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Validator\UserValidatorUpdate;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
 
@@ -23,8 +22,6 @@ final class UserValidatorUpdateTest extends AbstractUnitTestCase
 {
     public function testError(): void
     {
-        /** @var UserSanitizer $sanitizer */
-        $sanitizer = $this->container->get(UserSanitizer::class);
         /** @var UserCommandFactory $factory */
         $factory = $this->container->get(UserCommandFactory::class);
         /** @var UserValidatorUpdate $validator */

@@ -13,12 +13,19 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Domain\Infrastructure\DataSource;
 
+use Phalcon\Api\Domain\Infrastructure\DataSource\Company\CompanyTypes;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\UserTypes;
 use Phalcon\DataMapper\Pdo\Connection;
+use Phalcon\DataMapper\Pdo\Exception\Exception as DataMapperException;
 use Phalcon\DataMapper\Query\Delete;
+use Phalcon\DataMapper\Query\Insert;
+use Phalcon\DataMapper\Query\Update;
 
 /**
  * @phpstan-import-type TCriteria from UserTypes
+ * @phpstan-import-type TUserDbRecordOptional from UserTypes
+ * @phpstan-import-type TCompanyDbRecordOptional from CompanyTypes
+ * @phpstan-type TDbRecordOptional TCompanyDbRecordOptional|TUserDbRecordOptional
  */
 abstract class AbstractRepository
 {
@@ -40,6 +47,7 @@ abstract class AbstractRepository
      * @param TCriteria $criteria
      *
      * @return int
+     * @throws DataMapperException
      */
     public function deleteBy(array $criteria): int
     {
@@ -66,5 +74,44 @@ abstract class AbstractRepository
                 $this->idField => $recordId,
             ]
         );
+    }
+
+    /**
+     *
+     * @param TDbRecordOptional $columns
+     *
+     * @return int
+     * @throws DataMapperException
+     */
+    public function insert(array $columns): int
+    {
+        $insert = Insert::new($this->connection);
+        $insert
+            ->into($this->table)
+            ->columns($columns)
+            ->perform()
+        ;
+
+        return (int)$insert->getLastInsertId();
+    }
+
+    /**
+     * @param int               $recordId
+     * @param TDbRecordOptional $columns
+     *
+     * @return int
+     * @throws DataMapperException
+     */
+    public function update(int $recordId, array $columns): int
+    {
+        $update = Update::new($this->connection);
+        $update
+            ->table($this->table)
+            ->columns($columns)
+            ->where($this->idField . ' = ', $recordId)
+            ->perform()
+        ;
+
+        return $recordId;
     }
 }

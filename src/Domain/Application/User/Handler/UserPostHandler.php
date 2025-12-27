@@ -58,8 +58,14 @@ final class UserPostHandler extends AbstractUserPutPostHandler
             $userId = $this->repository->insert($user);
         } catch (PDOException $ex) {
             /**
-             * @todo send generic response and log the error
+             * Fire the event to the listeners
              */
+            $this->eventsManager->fire(
+                'user:pdoError',
+                $this,
+                $ex->getMessage()
+            );
+
             return $this->getErrorPayload(
                 HttpCodesEnum::AppCannotCreateDatabaseRecord,
                 $ex->getMessage()
@@ -82,7 +88,7 @@ final class UserPostHandler extends AbstractUserPutPostHandler
         /**
          * Return the user back
          */
-        return Payload::created([$domainUser->id => $domainUser->toArray()]);
+        return Payload::created($this->transformer->get($domainUser));
     }
 
     /**

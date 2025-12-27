@@ -24,6 +24,8 @@ use Phalcon\Api\Tests\AbstractUnitTestCase;
 use Phalcon\Api\Tests\Fixtures\Domain\Migrations\UsersMigration;
 use Phalcon\Support\Registry;
 
+use function uniqid;
+
 final class UserHandlerPutTest extends AbstractUnitTestCase
 {
     public function testHandlerFailureNoIdReturned(): void
@@ -92,6 +94,7 @@ final class UserHandlerPutTest extends AbstractUnitTestCase
 
     public function testHandlerFailurePdoError(): void
     {
+        $message = uniqid('pdo-error-');
         /** @var UserMapper $userMapper */
         $userMapper = $this->container->get(UserMapper::class);
         /** @var Registry $registry */
@@ -118,7 +121,7 @@ final class UserHandlerPutTest extends AbstractUnitTestCase
         $userRepository->method('findById')->willReturn($findByUser);
         $userRepository
             ->method('update')
-            ->willThrowException(new PDOException('abcde'))
+            ->willThrowException(new PDOException($message))
         ;
 
         $this->container->setShared(UserRepository::class, $userRepository);
@@ -152,7 +155,7 @@ final class UserHandlerPutTest extends AbstractUnitTestCase
 
         $errors = $actual['errors'];
 
-        $expected = [['Cannot update database record: abcde']];
+        $expected = [['Cannot update database record: ' . $message]];
         $actual   = $errors;
         $this->assertSame($expected, $actual);
     }

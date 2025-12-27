@@ -24,6 +24,7 @@ use Phalcon\Api\Tests\AbstractUnitTestCase;
 use Phalcon\Support\Registry;
 
 use function strip_tags;
+use function uniqid;
 
 final class UserHandlerPostTest extends AbstractUnitTestCase
 {
@@ -86,6 +87,7 @@ final class UserHandlerPostTest extends AbstractUnitTestCase
 
     public function testHandlerFailurePdoError(): void
     {
+        $message        = uniqid('pdo-error-');
         $userRepository = $this
             ->getMockBuilder(UserRepository::class)
             ->disableOriginalConstructor()
@@ -98,7 +100,7 @@ final class UserHandlerPostTest extends AbstractUnitTestCase
         ;
         $userRepository
             ->method('insert')
-            ->willThrowException(new PDOException('abcde'))
+            ->willThrowException(new PDOException($message))
         ;
 
         $this->container->setShared(UserRepository::class, $userRepository);
@@ -138,7 +140,7 @@ final class UserHandlerPostTest extends AbstractUnitTestCase
 
         $errors = $actual['errors'];
 
-        $expected = [['Cannot create database record: abcde']];
+        $expected = [['Cannot create database record: ' . $message]];
         $actual   = $errors;
         $this->assertSame($expected, $actual);
     }

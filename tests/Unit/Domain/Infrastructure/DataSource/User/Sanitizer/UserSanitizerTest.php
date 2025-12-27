@@ -85,7 +85,7 @@ final class UserSanitizerTest extends AbstractUnitTestCase
             'nameLast'      => 'some ',
             'nameMiddle'    => 'some ',
             'nameSuffix'    => 'some ',
-            'issuer'        => 'some ',
+            'issuer'        => 'some <value>',
             'tokenPassword' => 'some <value>',
             'tokenId'       => 'some <value>',
             'preferences'   => 'some ',

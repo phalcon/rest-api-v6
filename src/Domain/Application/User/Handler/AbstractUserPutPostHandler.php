@@ -15,12 +15,15 @@ namespace Phalcon\Api\Domain\Application\User\Handler;
 
 use Phalcon\Api\Domain\ADR\Payload;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\HandlerInterface;
-use Phalcon\Api\Domain\Infrastructure\DataSource\Interface\MapperInterface;
+use Phalcon\Api\Domain\Infrastructure\DataSource\Transformer\Transformer;
+use Phalcon\Api\Domain\Infrastructure\DataSource\User\DTO\User;
+use Phalcon\Api\Domain\Infrastructure\DataSource\User\Mapper\UserMapperInterface;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Repository\UserRepositoryInterface;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\UserTypes;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Validation\ValidatorInterface;
 use Phalcon\Api\Domain\Infrastructure\Encryption\Security;
 use Phalcon\Api\Domain\Infrastructure\Enums\Http\HttpCodesEnum;
+use Phalcon\Events\ManagerInterface as EventsManagerInterface;
 use Phalcon\Support\Registry;
 
 use function array_filter;
@@ -33,14 +36,19 @@ abstract class AbstractUserPutPostHandler implements HandlerInterface
 {
     /**
      * @param ValidatorInterface      $validator
-     * @param MapperInterface         $mapper
+     * @param UserMapperInterface     $mapper
      * @param UserRepositoryInterface $repository
+     * @param EventsManagerInterface  $eventsManager
+     * @param Transformer<User>       $transformer
+     * @param Registry                $registry
      * @param Security                $security
      */
     public function __construct(
         protected readonly ValidatorInterface $validator,
-        protected readonly MapperInterface $mapper,
+        protected readonly UserMapperInterface $mapper,
         protected readonly UserRepositoryInterface $repository,
+        protected readonly EventsManagerInterface $eventsManager,
+        protected readonly Transformer $transformer,
         protected readonly Registry $registry,
         private readonly Security $security,
     ) {

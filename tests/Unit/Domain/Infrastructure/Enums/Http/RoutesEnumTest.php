@@ -16,6 +16,11 @@ namespace Phalcon\Api\Tests\Unit\Domain\Infrastructure\Enums\Http;
 use Phalcon\Api\Domain\Application\Auth\Service\AuthLoginPostService;
 use Phalcon\Api\Domain\Application\Auth\Service\AuthLogoutPostService;
 use Phalcon\Api\Domain\Application\Auth\Service\AuthRefreshPostService;
+use Phalcon\Api\Domain\Application\Company\Service\CompanyDeleteService;
+use Phalcon\Api\Domain\Application\Company\Service\CompanyGetManyService;
+use Phalcon\Api\Domain\Application\Company\Service\CompanyGetService;
+use Phalcon\Api\Domain\Application\Company\Service\CompanyPostService;
+use Phalcon\Api\Domain\Application\Company\Service\CompanyPutService;
 use Phalcon\Api\Domain\Application\User\Service\UserDeleteService;
 use Phalcon\Api\Domain\Application\User\Service\UserGetService;
 use Phalcon\Api\Domain\Application\User\Service\UserPostService;
@@ -61,6 +66,46 @@ final class RoutesEnumTest extends AbstractUnitTestCase
                 AuthRefreshPostService::class,
             ],
             [
+                RoutesEnum::companyDelete,
+                '/company',
+                '',
+                '/company',
+                RoutesEnum::DELETE,
+                CompanyDeleteService::class,
+            ],
+            [
+                RoutesEnum::companyGet,
+                '/company',
+                '',
+                '/company',
+                RoutesEnum::GET,
+                CompanyGetService::class,
+            ],
+            [
+                RoutesEnum::companyGetMany,
+                '/company',
+                '/all',
+                '/company/all',
+                RoutesEnum::GET,
+                CompanyGetManyService::class,
+            ],
+            [
+                RoutesEnum::companyPost,
+                '/company',
+                '',
+                '/company',
+                RoutesEnum::POST,
+                CompanyPostService::class,
+            ],
+            [
+                RoutesEnum::companyPut,
+                '/company',
+                '',
+                '/company',
+                RoutesEnum::PUT,
+                CompanyPutService::class,
+            ],
+            [
                 RoutesEnum::userDelete,
                 '/user',
                 '',
@@ -97,7 +142,7 @@ final class RoutesEnumTest extends AbstractUnitTestCase
 
     public function testCheckCount(): void
     {
-        $expected = 7;
+        $expected = 12;
         $actual   = RoutesEnum::cases();
         $this->assertCount($expected, $actual);
     }

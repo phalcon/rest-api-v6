@@ -14,19 +14,16 @@ declare(strict_types=1);
 namespace Phalcon\Api\Domain\Infrastructure\DataSource\User\Repository;
 
 use Phalcon\Api\Domain\Infrastructure\DataSource\AbstractRepository;
-use Phalcon\Api\Domain\Infrastructure\DataSource\Interface\MapperInterface;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\DTO\User;
+use Phalcon\Api\Domain\Infrastructure\DataSource\User\Mapper\UserMapperInterface;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\UserTypes;
 use Phalcon\Api\Domain\Infrastructure\Enums\Common\FlagsEnum;
 use Phalcon\DataMapper\Pdo\Connection;
-use Phalcon\DataMapper\Query\Insert;
 use Phalcon\DataMapper\Query\Select;
-use Phalcon\DataMapper\Query\Update;
 
 /**
  * @phpstan-import-type TCriteria from UserTypes
  * @phpstan-import-type TUserRecord from UserTypes
- * @phpstan-import-type TUserDbRecordOptional from UserTypes
  */
 class UserRepository extends AbstractRepository implements UserRepositoryInterface
 {
@@ -41,7 +38,7 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
 
     public function __construct(
         Connection $connection,
-        private readonly MapperInterface $mapper,
+        private readonly UserMapperInterface $mapper,
     ) {
         parent::__construct($connection);
     }
@@ -106,43 +103,5 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
         }
 
         return $this->mapper->domain($result);
-    }
-
-
-    /**
-     *
-     * @param TUserDbRecordOptional $columns
-     *
-     * @return int
-     */
-    public function insert(array $columns): int
-    {
-        $insert = Insert::new($this->connection);
-        $insert
-            ->into($this->table)
-            ->columns($columns)
-            ->perform()
-        ;
-
-        return (int)$insert->getLastInsertId();
-    }
-
-    /**
-     * @param int                   $recordId
-     * @param TUserDbRecordOptional $columns
-     *
-     * @return int
-     */
-    public function update(int $recordId, array $columns): int
-    {
-        $update = Update::new($this->connection);
-        $update
-            ->table($this->table)
-            ->columns($columns)
-            ->where($this->idField . ' = ', $recordId)
-            ->perform()
-        ;
-
-        return $recordId;
     }
 }

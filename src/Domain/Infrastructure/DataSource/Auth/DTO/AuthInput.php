@@ -14,12 +14,12 @@ declare(strict_types=1);
 namespace Phalcon\Api\Domain\Infrastructure\DataSource\Auth\DTO;
 
 use Phalcon\Api\Domain\ADR\InputTypes;
-use Phalcon\Api\Domain\Infrastructure\DataSource\AbstractValueObject;
+use Phalcon\Api\Domain\Infrastructure\DataSource\AbstractInputValueObject;
 
 /**
  * @phpstan-import-type TAuthInput from InputTypes
  */
-final class AuthInput extends AbstractValueObject
+final class AuthInput extends AbstractInputValueObject
 {
     /**
      * @param string|null $email

@@ -19,9 +19,7 @@ use Phalcon\Api\Domain\Infrastructure\Env\EnvManager;
 use Phalcon\Api\Responder\JsonResponder;
 use Phalcon\Api\Responder\ResponderInterface;
 use Phalcon\Api\Responder\ResponderTypes;
-use Phalcon\Events\Exception as EventsException;
 use Phalcon\Http\RequestInterface;
-use Phalcon\Http\Response\Exception as ResponseException;
 use Phalcon\Http\ResponseInterface;
 use Phalcon\Mvc\Micro;
 use Phalcon\Mvc\Micro\MiddlewareInterface;
@@ -76,8 +74,6 @@ abstract class AbstractMiddleware implements MiddlewareInterface
      * @param TErrors $errors
      *
      * @return void
-     * @throws EventsException
-     * @throws ResponseException
      */
     protected function halt(
         Micro $application,

@@ -30,10 +30,10 @@ use Psr\SimpleCache\InvalidArgumentException;
  * @phpstan-import-type TTokenIssue from TokenManagerInterface
  * @phpstan-import-type TValidatorErrors from InputTypes
  */
-final class TokenCache implements TokenCacheInterface
+final readonly class TokenCache implements TokenCacheInterface
 {
     public function __construct(
-        private readonly Cache $cache,
+        private Cache $cache,
     ) {
     }
 

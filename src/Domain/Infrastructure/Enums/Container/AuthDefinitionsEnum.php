@@ -24,6 +24,7 @@ use Phalcon\Api\Domain\Application\Auth\Service\AuthRefreshPostService;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\CommandBus;
 use Phalcon\Api\Domain\Infrastructure\Container;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Auth\Sanitizer\AuthSanitizer;
+use Phalcon\Api\Domain\Infrastructure\DataSource\Auth\Transformer\AuthTransformer;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Auth\Validator\AuthLoginValidator;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Auth\Validator\AuthTokenValidator;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Repository\UserRepository;
@@ -47,6 +48,7 @@ enum AuthDefinitionsEnum: string implements DefinitionsEnumInterface
     case AuthSanitizer      = AuthSanitizer::class;
     case AuthLoginValidator = AuthLoginValidator::class;
     case AuthTokenValidator = AuthTokenValidator::class;
+    case AuthTransformer    = AuthTransformer::class;
 
     /**
      * @return TService
@@ -55,7 +57,7 @@ enum AuthDefinitionsEnum: string implements DefinitionsEnumInterface
     {
         return match ($this) {
             self::AuthCommandFactory => [
-                'className' => AuthCommandFactory::class,
+                'className' => $this->value,
                 'arguments' => [
                     [
                         'type' => 'service',
@@ -63,11 +65,19 @@ enum AuthDefinitionsEnum: string implements DefinitionsEnumInterface
                     ],
                 ],
             ],
-            self::AuthLoginPost      => $this->getService(AuthLoginPostService::class),
-            self::AuthLogoutPost     => $this->getService(AuthLogoutPostService::class),
-            self::AuthRefreshPost    => $this->getService(AuthRefreshPostService::class),
+            self::AuthLoginPost,
+            self::AuthLogoutPost,
+            self::AuthRefreshPost    => [
+                'className' => $this->value,
+                'arguments' => [
+                    [
+                        'type' => 'service',
+                        'name' => AuthFacade::class,
+                    ],
+                ],
+            ],
             self::AuthFacade         => [
-                'className' => AuthFacade::class,
+                'className' => $this->value,
                 'arguments' => [
                     [
                         'type' => 'service',
@@ -80,7 +90,7 @@ enum AuthDefinitionsEnum: string implements DefinitionsEnumInterface
                 ],
             ],
             self::AuthLoginHandler   => [
-                'className' => AuthLoginPostHandler::class,
+                'className' => $this->value,
                 'arguments' => [
                     [
                         'type' => 'service',
@@ -89,6 +99,10 @@ enum AuthDefinitionsEnum: string implements DefinitionsEnumInterface
                     [
                         'type' => 'service',
                         'name' => TokenManager::class,
+                    ],
+                    [
+                        'type' => 'service',
+                        'name' => AuthTransformer::class,
                     ],
                     [
                         'type' => 'service',
@@ -100,10 +114,26 @@ enum AuthDefinitionsEnum: string implements DefinitionsEnumInterface
                     ],
                 ],
             ],
-            self::AuthLogoutHandler  => $this->getHandlerService(AuthLogoutPostHandler::class),
-            self::AuthRefreshHandler => $this->getHandlerService(AuthRefreshPostHandler::class),
+            self::AuthLogoutHandler,
+            self::AuthRefreshHandler => [
+                'className' => $this->value,
+                'arguments' => [
+                    [
+                        'type' => 'service',
+                        'name' => TokenManager::class,
+                    ],
+                    [
+                        'type' => 'service',
+                        'name' => AuthTransformer::class,
+                    ],
+                    [
+                        'type' => 'service',
+                        'name' => AuthTokenValidator::class,
+                    ],
+                ],
+            ],
             self::AuthSanitizer      => [
-                'className' => AuthSanitizer::class,
+                'className' => $this->value,
                 'arguments' => [
                     [
                         'type' => 'service',
@@ -112,7 +142,7 @@ enum AuthDefinitionsEnum: string implements DefinitionsEnumInterface
                 ],
             ],
             self::AuthLoginValidator => [
-                'className' => AuthLoginValidator::class,
+                'className' => $this->value,
                 'arguments' => [
                     [
                         'type' => 'service',
@@ -121,7 +151,7 @@ enum AuthDefinitionsEnum: string implements DefinitionsEnumInterface
                 ],
             ],
             self::AuthTokenValidator => [
-                'className' => AuthTokenValidator::class,
+                'className' => $this->value,
                 'arguments' => [
                     [
                         'type' => 'service',
@@ -137,49 +167,17 @@ enum AuthDefinitionsEnum: string implements DefinitionsEnumInterface
                     ],
                 ],
             ],
+            self::AuthTransformer    => [
+                'className' => $this->value,
+            ],
         };
     }
 
     public function isShared(): bool
     {
-        return false;
-    }
-
-    /**
-     * @param class-string $className
-     *
-     * @return TService
-     */
-    private function getHandlerService(string $className): array
-    {
-        return [
-            'className' => $className,
-            'arguments' => [
-                [
-                    'type' => 'service',
-                    'name' => TokenManager::class,
-                ],
-                [
-                    'type' => 'service',
-                    'name' => AuthTokenValidator::class,
-                ],
-            ],
-        ];
-    }
-
-    /**
-     * @return TService
-     */
-    private function getService(string $className): array
-    {
-        return [
-            'className' => $className,
-            'arguments' => [
-                [
-                    'type' => 'service',
-                    'name' => AuthFacade::class,
-                ],
-            ],
-        ];
+        return match ($this) {
+            self::AuthSanitizer => true,
+            default             => false,
+        };
     }
 }

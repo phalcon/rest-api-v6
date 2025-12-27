@@ -14,11 +14,8 @@ declare(strict_types=1);
 namespace Phalcon\Api\Domain\Infrastructure\DataSource\User\Validator;
 
 use Phalcon\Api\Domain\Infrastructure\DataSource\Validation\AbstractValidator;
-use Phalcon\Api\Domain\Infrastructure\Enums\Validator\UserUpdateEnum;
 
 final class UserValidatorUpdate extends AbstractValidator
 {
-    use UserValidatorTrait;
-
     protected string $fields = UserUpdateEnum::class;
 }

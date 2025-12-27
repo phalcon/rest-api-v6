@@ -22,7 +22,6 @@ use Phalcon\Api\Domain\Infrastructure\DataSource\Validation\Result;
 use Phalcon\Api\Domain\Infrastructure\Encryption\TokenManagerInterface;
 use Phalcon\Api\Domain\Infrastructure\Enums\Common\JWTEnum;
 use Phalcon\Api\Domain\Infrastructure\Enums\Http\HttpCodesEnum;
-use Phalcon\Api\Domain\Infrastructure\Enums\Validator\AuthTokenValidatorEnum;
 use Phalcon\Encryption\Security\JWT\Token\Token;
 use Phalcon\Filter\Validation\ValidationInterface;
 
@@ -31,8 +30,8 @@ final class AuthTokenValidator extends AbstractValidator
     protected string $fields = AuthTokenValidatorEnum::class;
 
     public function __construct(
-        private TokenManagerInterface $tokenManager,
-        private UserRepositoryInterface $userRepository,
+        private readonly TokenManagerInterface $tokenManager,
+        private readonly UserRepositoryInterface $userRepository,
         ValidationInterface $validator,
     ) {
         parent::__construct($validator);
@@ -53,9 +52,6 @@ final class AuthTokenValidator extends AbstractValidator
             return Result::error([HttpCodesEnum::AppTokenNotPresent->error()]);
         }
 
-        /**
-         * @todo add the docblock for $command here
-         */
         /** @var AuthLogoutPostCommand|AuthRefreshPostCommand $command */
         /** @var string $token */
         $token       = $command->token;

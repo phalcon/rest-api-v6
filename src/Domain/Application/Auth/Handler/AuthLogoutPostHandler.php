@@ -49,6 +49,6 @@ final class AuthLogoutPostHandler extends AbstractAuthLogoutRefreshHandler
 
         $this->tokenManager->revoke($domainUser);
 
-        return Payload::success(['authenticated' => false]);
+        return Payload::success($this->transformer->logout());
     }
 }

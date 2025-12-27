@@ -69,8 +69,14 @@ final class UserPutHandler extends AbstractUserPutPostHandler
             $userId = $this->repository->update($command->id, $user);
         } catch (PDOException $ex) {
             /**
-             * @todo send generic response and log the error
+             * Fire the event to the listeners
              */
+            $this->eventsManager->fire(
+                'user:pdoError',
+                $this,
+                $ex->getMessage()
+            );
+
             return $this->getErrorPayload(
                 HttpCodesEnum::AppCannotUpdateDatabaseRecord,
                 $ex->getMessage()
@@ -93,7 +99,7 @@ final class UserPutHandler extends AbstractUserPutPostHandler
         /**
          * Return the user back
          */
-        return Payload::updated([$domainUser->id => $domainUser->toArray()]);
+        return Payload::updated($this->transformer->get($domainUser));
     }
 
     /**

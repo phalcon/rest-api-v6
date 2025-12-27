@@ -26,6 +26,7 @@ use Phalcon\Support\Registry;
 use function date;
 use function str_starts_with;
 use function strip_tags;
+use function uniqid;
 
 final class UserServicePutTest extends AbstractUnitTestCase
 {
@@ -93,6 +94,7 @@ final class UserServicePutTest extends AbstractUnitTestCase
 
     public function testServiceFailurePdoError(): void
     {
+        $message = uniqid('pdo-error-');
         /** @var UserMapper $userMapper */
         $userMapper = $this->container->get(UserMapper::class);
         /** @var Registry $registry */
@@ -117,7 +119,7 @@ final class UserServicePutTest extends AbstractUnitTestCase
         $userRepository->method('findById')->willReturn($findByUser);
         $userRepository
             ->method('update')
-            ->willThrowException(new PDOException('abcde'))
+            ->willThrowException(new PDOException($message))
         ;
 
         $this->container->setShared(UserRepository::class, $userRepository);
@@ -151,7 +153,7 @@ final class UserServicePutTest extends AbstractUnitTestCase
 
         $errors = $actual['errors'];
 
-        $expected = [['Cannot update database record: abcde']];
+        $expected = [['Cannot update database record: ' . $message]];
         $actual   = $errors;
         $this->assertSame($expected, $actual);
     }

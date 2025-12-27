@@ -17,7 +17,6 @@ use Phalcon\Api\Domain\Infrastructure\CommandBus\CommandInterface;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Validation\AbstractValidator;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Validation\Result;
 use Phalcon\Api\Domain\Infrastructure\Enums\Http\HttpCodesEnum;
-use Phalcon\Api\Domain\Infrastructure\Enums\Validator\AuthLoginValidatorEnum;
 
 final class AuthLoginValidator extends AbstractValidator
 {

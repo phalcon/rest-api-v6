@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Phalcon\Api\Domain\Infrastructure\DataSource;
 
 use Phalcon\Api\Domain\ADR\InputTypes;
+use Phalcon\Api\Domain\Infrastructure\DataSource\Interface\SanitizerEnumInterface;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Interface\SanitizerInterface;
-use Phalcon\Api\Domain\Infrastructure\Enums\Sanitizer\SanitizersEnumInterface;
 use Phalcon\Filter\FilterInterface;
 
 /**
@@ -38,7 +38,7 @@ abstract class AbstractSanitizer implements SanitizerInterface
     public function sanitize(array $input): array
     {
         $enum = $this->enum;
-        /** @var SanitizersEnumInterface[] $fields */
+        /** @var SanitizerEnumInterface[] $fields */
         $fields = $enum::cases();
 
         /**
@@ -53,7 +53,7 @@ abstract class AbstractSanitizer implements SanitizerInterface
          *
          * If there is no sanitizer defined, the value will be left intact.
          */
-        /** @var SanitizersEnumInterface $field */
+        /** @var SanitizerEnumInterface $field */
         foreach ($fields as $field) {
             $value = $input[$field->name] ?? $field->default();
 
