@@ -39,7 +39,7 @@ final class CompanyServicePutTest extends AbstractUnitTestCase
 
         $findByCompany = $companyMapper->domain($companyData);
 
-        $userRepository = $this
+        $companyRepository = $this
             ->getMockBuilder(CompanyRepository::class)
             ->disableOriginalConstructor()
             ->onlyMethods(
@@ -50,10 +50,10 @@ final class CompanyServicePutTest extends AbstractUnitTestCase
             )
             ->getMock()
         ;
-        $userRepository->method('update')->willReturn(0);
-        $userRepository->method('findById')->willReturn($findByCompany);
+        $companyRepository->method('update')->willReturn(0);
+        $companyRepository->method('findById')->willReturn($findByCompany);
 
-        $this->container->setShared(CompanyRepository::class, $userRepository);
+        $this->container->setShared(CompanyRepository::class, $companyRepository);
 
         /**
          * Add a user in the repository for the session
@@ -104,7 +104,7 @@ final class CompanyServicePutTest extends AbstractUnitTestCase
 
         $findByCompany = $companyMapper->domain($companyData);
 
-        $userRepository = $this
+        $companyRepository = $this
             ->getMockBuilder(CompanyRepository::class)
             ->disableOriginalConstructor()
             ->onlyMethods(
@@ -115,13 +115,13 @@ final class CompanyServicePutTest extends AbstractUnitTestCase
             )
             ->getMock()
         ;
-        $userRepository->method('findById')->willReturn($findByCompany);
-        $userRepository
+        $companyRepository->method('findById')->willReturn($findByCompany);
+        $companyRepository
             ->method('update')
             ->willThrowException(new PDOException($message))
         ;
 
-        $this->container->setShared(CompanyRepository::class, $userRepository);
+        $this->container->setShared(CompanyRepository::class, $companyRepository);
 
         /**
          * Add a user in the repository for the session
@@ -165,7 +165,7 @@ final class CompanyServicePutTest extends AbstractUnitTestCase
     {
         /** @var CompanyMapper $companyMapper */
         $companyMapper  = $this->container->get(CompanyMapper::class);
-        $userRepository = $this
+        $companyRepository = $this
             ->getMockBuilder(CompanyRepository::class)
             ->disableOriginalConstructor()
             ->onlyMethods(
@@ -175,9 +175,9 @@ final class CompanyServicePutTest extends AbstractUnitTestCase
             )
             ->getMock()
         ;
-        $userRepository->method('findById')->willReturn(null);
+        $companyRepository->method('findById')->willReturn(null);
 
-        $this->container->setShared(CompanyRepository::class, $userRepository);
+        $this->container->setShared(CompanyRepository::class, $companyRepository);
 
         /** @var CompanyPutService $service */
         $service = $this->container->get(CompanyPutService::class);
