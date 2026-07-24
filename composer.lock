@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6cebd30ca27a4cd101cbbb40e6221c7e",
+    "content-hash": "ac1b88d7d8abbbf74d382212ba60805b",
     "packages": [
         {
             "name": "cakephp/chronos",
@@ -659,16 +659,16 @@
         },
         {
             "name": "phalcon/phalcon",
-            "version": "v6.0.0alpha6",
+            "version": "v6.0.0beta1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phalcon/phalcon.git",
-                "reference": "ca13670e499839602968ecd52c96a7a3dc93b09c"
+                "reference": "8514b92afe167411077f3175023a38038e52cbf3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phalcon/phalcon/zipball/ca13670e499839602968ecd52c96a7a3dc93b09c",
-                "reference": "ca13670e499839602968ecd52c96a7a3dc93b09c",
+                "url": "https://api.github.com/repos/phalcon/phalcon/zipball/8514b92afe167411077f3175023a38038e52cbf3",
+                "reference": "8514b92afe167411077f3175023a38038e52cbf3",
                 "shasum": ""
             },
             "require": {
@@ -726,7 +726,7 @@
             ],
             "support": {
                 "issues": "https://github.com/phalcon/phalcon/issues",
-                "source": "https://github.com/phalcon/phalcon/tree/v6.0.0alpha6"
+                "source": "https://github.com/phalcon/phalcon/tree/v6.0.0beta1"
             },
             "funding": [
                 {
@@ -738,7 +738,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2026-07-23T04:53:58+00:00"
+            "time": "2026-07-24T22:56:22+00:00"
         },
         {
             "name": "phalcon/traits",
@@ -6849,7 +6849,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "phalcon/phalcon": 15
+        "phalcon/phalcon": 10
     },
     "prefer-stable": true,
     "prefer-lowest": false,

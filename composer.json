@@ -22,7 +22,7 @@
         "php": ">=8.2",
         "ext-mbstring": "*",
         "ext-pdo": "*",
-        "phalcon/phalcon": "^6.0@alpha",
+        "phalcon/phalcon": "^6.0@beta",
         "robmorgan/phinx": "^0.16.10",
         "vlucas/phpdotenv": "^5.6"
     },
