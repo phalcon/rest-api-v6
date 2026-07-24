@@ -42,13 +42,51 @@ The directory structure for this projects follows the recommendations of [pds/sk
 The folders contain:
 
 - `bin`: empty for now, we might use it later on
-- `config`: .env configuration files for CI and example
 - `docs`: documentation (TODO)
 - `public`: entry point of the application where `index.php` lives
-- `resources`: stores database migrations and docker files for local development
+- `resources`: quality tool configuration, the environment template, database migrations and docker files for local development
 - `src`: source code of the project
 - `storage`: various storage data such as application logs
 - `tests`: tests
+
+## Quick start (Docker)
+
+Everything runs in Docker — nothing is required on the host but Docker itself.
+
+```bash
+cp resources/.env.example .env
+docker compose up -d --build
+docker compose exec app composer migrate
+```
+
+The API is then on <http://localhost:8080>; `GET /health` is the simplest check.
+Set `APP_PORT` in `.env` if that port is already taken.
+
+The stack is four containers: `app` (PHP-FPM), `nginx`, `db` (MariaDB) and
+`cache` (Redis). nginx and PHP-FPM talk over a unix socket on a shared volume,
+and nginx rate-limits to 10 req/s per client with a burst of 20, answering
+throttled requests with the same JSON envelope the API uses everywhere else.
+
+To run against a specific PHP version (default `8.5`, supported `8.2`–`8.5`):
+
+```bash
+PHP_VERSION=8.2 docker compose up -d --build
+```
+
+## Composer scripts
+
+```bash
+composer cs                 # coding standard (PSR-12)
+composer cs-fix             # coding standard, autofix
+composer cs-fixer           # PHP CS Fixer (dry-run)
+composer cs-fixer-fix       # PHP CS Fixer, autofix
+composer analyze            # static analysis (PHPStan, level max)
+composer test               # test suite
+composer test-coverage      # tests + Clover coverage to tests/_output/coverage.xml
+composer migrate            # database migrations
+```
+
+Run any of these inside the container with `docker compose exec app <command>`.
 
 ## High-level architecture
 
@@ -58,7 +96,7 @@ The application follows the [ADR pattern][adr_pattern] where the application is 
 - `Domain` — contains the application logic. Implements small components, services that map to endpoints, validators, repositories and helpers.
 - `Responder` — builds and emits the HTTP response from a `Payload`.
 
-Core files live under `src/` and are registered in the DI container in `src/Domain/Components/Container.php`.
+Core files live under `src/` and are registered in the DI container in `src/Domain/Infrastructure/Container.php`.
 
 ## Main components
 
