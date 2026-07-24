@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Domain\ADR;
 
-use PayloadInterop\DomainStatus;
 use Phalcon\Api\Domain\Infrastructure\Enums\Http\HttpCodesEnum;
 use Phalcon\Api\Responder\ResponderTypes;
-use Phalcon\Domain\Payload as PhalconPayload;
+use Phalcon\Domain\Payload\Payload as PhalconPayload;
+use Phalcon\Domain\Payload\Status;
 
 use function array_key_exists;
 
@@ -43,7 +43,12 @@ final class Payload extends PhalconPayload
         $result = $this->mergePart($result, $data, 'data');
         $result = $this->mergePart($result, $errors, 'errors');
 
-        parent::__construct($status, $result);
+        /**
+         * The parent exposes setters rather than a constructor, and carries
+         * the result under "output".
+         */
+        $this->setStatus($status);
+        $this->setOutput($result);
     }
 
     /**
@@ -53,7 +58,7 @@ final class Payload extends PhalconPayload
      */
     public static function created(array $data): self
     {
-        return new self(DomainStatus::CREATED, $data);
+        return new self(Status::CREATED, $data);
     }
 
     /**
@@ -63,7 +68,7 @@ final class Payload extends PhalconPayload
      */
     public static function deleted(array $data): self
     {
-        return new self(DomainStatus::DELETED, $data);
+        return new self(Status::DELETED, $data);
     }
 
     /**
@@ -73,7 +78,7 @@ final class Payload extends PhalconPayload
      */
     public static function error(array $errors): self
     {
-        return new self(status: DomainStatus::ERROR, errors: $errors);
+        return new self(status: Status::ERROR, errors: $errors);
     }
 
     /**
@@ -83,7 +88,7 @@ final class Payload extends PhalconPayload
      */
     public static function invalid(array $errors): self
     {
-        return new self(status: DomainStatus::INVALID, errors: $errors);
+        return new self(status: Status::NOT_VALID, errors: $errors);
     }
 
     /**
@@ -92,7 +97,7 @@ final class Payload extends PhalconPayload
     public static function notFound(): self
     {
         return new self(
-            status: DomainStatus::NOT_FOUND,
+            status: Status::NOT_FOUND,
             errors: [
                 'code'    => HttpCodesEnum::NotFound->value,
                 'message' => HttpCodesEnum::NotFound->text(),
@@ -109,7 +114,7 @@ final class Payload extends PhalconPayload
      */
     public static function success(array $data): self
     {
-        return new self(DomainStatus::SUCCESS, $data);
+        return new self(Status::SUCCESS, $data);
     }
 
     /**
@@ -120,7 +125,7 @@ final class Payload extends PhalconPayload
     public static function unauthorized(array $errors): self
     {
         return new self(
-            status: DomainStatus::UNAUTHORIZED,
+            status: Status::NOT_AUTHORIZED,
             errors: [
                 'code'    => HttpCodesEnum::Unauthorized->value,
                 'message' => HttpCodesEnum::Unauthorized->text(),
@@ -138,11 +143,26 @@ final class Payload extends PhalconPayload
     public static function updated(array $data): self
     {
         return new self(
-            DomainStatus::UPDATED,
+            Status::UPDATED,
             [
                 'data' => $data,
             ]
         );
+    }
+
+    /**
+     * The result assembled by the constructor. The parent stores it as its
+     * "output" and types the accessor as mixed; this narrows it back to an
+     * array for the responder.
+     *
+     * @return array<array-key, mixed>
+     */
+    public function getResult(): array
+    {
+        /** @var array<array-key, mixed> $output */
+        $output = $this->getOutput();
+
+        return $output;
     }
 
     /**
