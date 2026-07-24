@@ -1,130 +1,74 @@
 services:
-
-  app-8.2:
+  app:
     build:
-      dockerfile: ./resources/docker/Dockerfile
+      context: .
+      dockerfile: resources/docker/Dockerfile
       args:
-        PHP_VERSION: 8.2
-    hostname: rest-api-app-82
-    container_name: "${PROJECT_NAME}-api-8.2"
-    tty: true
+        PHP_VERSION: ${PHP_VERSION:-8.5}
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+    container_name: ${PROJECT_PREFIX:-rest-api}-app
+    hostname: ${PROJECT_PREFIX:-rest-api}-app
     working_dir: /app
     volumes:
-      - ./:/app
-    depends_on:
-      - app-db
-      - app-cache
-    networks:
-      - app-network
+      - .:/app
+      - fpm-socket:/run/php
+    env_file: .env
     environment:
-      - PHP_IDE_CONFIG=serverName=rest-api-app-82
-      - APP_ENV=development
-      - APP_ENV_ADAPTER=dotenv
+      PHP_IDE_CONFIG: serverName=${PROJECT_PREFIX:-rest-api}-app
+    depends_on:
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_started
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/fpm-ping"]
+      test: ["CMD", "php-fpm", "-t"]
       interval: 30s
       timeout: 3s
       retries: 3
       start_period: 5s
 
-  app-8.3:
-    build:
-      dockerfile: ./resources/docker/Dockerfile
-      args:
-        PHP_VERSION: 8.3
-    hostname: rest-api-app-83
-    container_name: "${PROJECT_NAME}-api-8.3"
-    tty: true
-    working_dir: /app
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: ${PROJECT_PREFIX:-rest-api}-nginx
+    hostname: ${PROJECT_PREFIX:-rest-api}-nginx
+    ports:
+      # The container always listens on 8080; the host port is configurable
+      # so several projects can run side by side.
+      - "${APP_PORT:-8080}:8080"
     volumes:
-      - ./:/app
+      - .:/app:ro
+      - ./resources/docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./resources/docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - fpm-socket:/run/php
     depends_on:
-      - app-db
-      - app-cache
-    networks:
-      - app-network
-    environment:
-      - PHP_IDE_CONFIG=serverName=rest-api-app-83
-      - APP_ENV=development
-      - APP_ENV_ADAPTER=dotenv
+      - app
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/fpm-ping"]
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/fpm-ping"]
       interval: 30s
       timeout: 3s
       retries: 3
       start_period: 5s
 
-  app-8.4:
-    build:
-      dockerfile: ./resources/docker/Dockerfile
-      args:
-        PHP_VERSION: 8.4
-    hostname: rest-api-app-84
-    container_name: "${PROJECT_NAME}-api-8.4"
-    tty: true
-    working_dir: /app
-    volumes:
-      - ./:/app
-    depends_on:
-      - app-db
-      - app-cache
-    networks:
-      - app-network
-    environment:
-      - PHP_IDE_CONFIG=serverName=rest-api-app-84
-      - APP_ENV=development
-      - APP_ENV_ADAPTER=dotenv
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/fpm-ping"]
-      interval: 30s
-      timeout: 3s
-      retries: 3
-      start_period: 5s
-
-  app-8.5:
-    build:
-      dockerfile: ./resources/docker/Dockerfile
-      args:
-        PHP_VERSION: 8.5
-    hostname: rest-api-app-85
-    container_name: "${PROJECT_NAME}-api-8.5"
-    tty: true
-    working_dir: /app
-    volumes:
-      - ./:/app
-    depends_on:
-      - app-db
-      - app-cache
-    networks:
-      - app-network
-    environment:
-      - PHP_IDE_CONFIG=serverName=rest-api-app-85
-      - APP_ENV=development
-      - APP_ENV_ADAPTER=dotenv
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/fpm-ping"]
-      interval: 30s
-      timeout: 3s
-      retries: 3
-      start_period: 5s
-
-  app-db:
-    container_name: "${PROJECT_NAME}-db"
+  db:
     image: mariadb:10.6
+    container_name: ${PROJECT_PREFIX:-rest-api}-db
+    hostname: ${PROJECT_PREFIX:-rest-api}-db
     environment:
-      - MYSQL_ROOT_PASSWORD=secret
-      - MYSQL_USER=phalcon
-      - MYSQL_DATABASE=phalcon
-      - MYSQL_PASSWORD=secret
-    networks:
-      - app-network
+      MARIADB_ROOT_PASSWORD: ${DB_PASS:-secret}
+      MARIADB_DATABASE: ${DB_NAME:-phalcon}
+    # No host port published: the app reaches the database over the internal
+    # compose network. Not exposed to the host by design.
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
 
-  app-cache:
-    container_name: "${PROJECT_NAME}-cache"
+  cache:
     image: redis:8-alpine
-    networks:
-      - app-network
+    container_name: ${PROJECT_PREFIX:-rest-api}-cache
+    hostname: ${PROJECT_PREFIX:-rest-api}-cache
 
-networks:
-  app-network:
-    driver: bridge
+volumes:
+  fpm-socket:

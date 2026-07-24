@@ -1,0 +1,15 @@
+.dockerignore
+.editorconfig
+.env
+.git
+.gitattributes
+.gitignore
+.github
+.idea
+*.md
+
+vendor
+composer.lock
+
+storage/logs/*.log
+tests/_output/*.*
