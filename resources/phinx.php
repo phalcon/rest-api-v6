@@ -4,22 +4,24 @@ declare(strict_types=1);
 
 use Dotenv\Dotenv;
 
-require_once __DIR__ . '/vendor/autoload.php';
+$root = dirname(__DIR__);
 
-// Load environment
+require_once $root . '/vendor/autoload.php';
+
+// Real OS/CI environment variables win over the .env file
 $envs = array_merge(getenv(), $_ENV);
 
-Dotenv::createImmutable(__DIR__)->load();
+Dotenv::createImmutable($root)->load();
 
 $_ENV = array_merge($envs, $_ENV);
 
 return [
     'paths'         => [
-        'migrations' => './resources/db/migrations',
-        'seeds'      => './resources/db/seeds',
+        'migrations' => __DIR__ . '/db/migrations',
+        'seeds'      => __DIR__ . '/db/seeds',
     ],
     'environments'  => [
-        'default_migration_table' => "ut_migrations",
+        'default_migration_table' => 'ut_migrations',
         'default_environment'     => 'development',
         'development'             => [
             'adapter' => $_ENV['DB_ADAPTER'] ?? 'mysql',

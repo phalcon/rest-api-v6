@@ -1,0 +1,9 @@
+parameters:
+    level: max
+    paths:
+        - ../src
+        - ../public/index.php
+    reportUnmatchedIgnoredErrors: false
+    tmpDir: ../tests/_output
+    bootstrapFiles:
+        - ../vendor/autoload.php

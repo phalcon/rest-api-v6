@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<ruleset name="Phalcon-REST-v6">
+    <description>Phalcon REST API v6 Coding Standards</description>
+
+    <arg name="colors"/>
+    <arg value="ps"/>
+
+    <rule ref="PSR12">
+        <exclude name="PSR2.Methods.MethodDeclaration.Underscore"/>
+        <exclude name="PSR1.Files.SideEffects.FoundWithSymbols"/>
+    </rule>
+
+    <file>../src</file>
+    <file>../public/index.php</file>
+    <file>../tests</file>
+
+    <!-- Coverage, phpunit and phpstan artifacts, not source -->
+    <exclude-pattern>*/tests/_output/*</exclude-pattern>
+</ruleset>
