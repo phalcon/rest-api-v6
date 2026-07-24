@@ -25,13 +25,13 @@ use Phalcon\Api\Tests\Fixtures\Domain\Migrations\UsersMigration;
 use Phalcon\DataMapper\Pdo\Connection;
 use Phalcon\Encryption\Security\JWT\Builder;
 use Phalcon\Encryption\Security\JWT\Signer\Hmac;
-use PHPUnit\Framework\TestCase;
+use Phalcon\Talon\PHPUnit\AbstractUnitTestCase as TalonUnitTestCase;
 
 use function base64_encode;
 use function random_bytes;
 use function substr;
 
-abstract class AbstractUnitTestCase extends TestCase
+abstract class AbstractUnitTestCase extends TalonUnitTestCase
 {
     /**
      * @var Connection|null
@@ -42,18 +42,6 @@ abstract class AbstractUnitTestCase extends TestCase
      * @var Container
      */
     protected Container $container;
-
-    /**
-     * @param string $fileName
-     * @param string $stream
-     *
-     * @return void
-     */
-    public function assertFileContentsContains(string $fileName, string $stream): void
-    {
-        $contents = file_get_contents($fileName);
-        $this->assertStringContainsString($stream, $contents);
-    }
 
     /**
      * @param string $table
