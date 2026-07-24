@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Phalcon\Api\Tests\Unit\Domain\Application\Auth\Service;
 
 use Faker\Factory;
-use PayloadInterop\DomainStatus;
+use Phalcon\Domain\Payload\Status;
 use Phalcon\Api\Domain\Application\Auth\Service\AuthLoginPostService;
 use Phalcon\Api\Domain\Infrastructure\Enums\Http\HttpCodesEnum;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
@@ -31,7 +31,7 @@ final class LoginPostServiceTest extends AbstractUnitTestCase
 
         $payload = $service->__invoke([]);
 
-        $expected = DomainStatus::UNAUTHORIZED;
+        $expected = Status::NOT_AUTHORIZED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -63,7 +63,7 @@ final class LoginPostServiceTest extends AbstractUnitTestCase
 
         $payload = $service->__invoke($payload);
 
-        $expected = DomainStatus::SUCCESS;
+        $expected = Status::SUCCESS;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -125,7 +125,7 @@ final class LoginPostServiceTest extends AbstractUnitTestCase
 
         $payload = $service->__invoke($payload);
 
-        $expected = DomainStatus::UNAUTHORIZED;
+        $expected = Status::NOT_AUTHORIZED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -157,7 +157,7 @@ final class LoginPostServiceTest extends AbstractUnitTestCase
 
         $payload = $service->__invoke($payload);
 
-        $expected = DomainStatus::UNAUTHORIZED;
+        $expected = Status::NOT_AUTHORIZED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 

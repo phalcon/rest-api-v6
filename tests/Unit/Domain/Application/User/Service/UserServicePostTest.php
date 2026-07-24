@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Phalcon\Api\Tests\Unit\Domain\Application\User\Service;
 
 use DateTimeImmutable;
-use PayloadInterop\DomainStatus;
+use Phalcon\Domain\Payload\Status;
 use PDOException;
 use Phalcon\Api\Domain\Application\User\Handler\UserPostHandler;
 use Phalcon\Api\Domain\Application\User\Service\UserPostService;
@@ -71,7 +71,7 @@ final class UserServicePostTest extends AbstractUnitTestCase
 
         $payload = $service->__invoke($domainData);
 
-        $expected = DomainStatus::ERROR;
+        $expected = Status::ERROR;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -131,7 +131,7 @@ final class UserServicePostTest extends AbstractUnitTestCase
 
         $payload = $service->__invoke($domainData);
 
-        $expected = DomainStatus::ERROR;
+        $expected = Status::ERROR;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -185,7 +185,7 @@ final class UserServicePostTest extends AbstractUnitTestCase
 
         $payload = $service->__invoke($domainData);
 
-        $expected = DomainStatus::INVALID;
+        $expected = Status::NOT_VALID;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -231,7 +231,7 @@ final class UserServicePostTest extends AbstractUnitTestCase
 
         $payload = $service->__invoke($domainData);
 
-        $expected = DomainStatus::CREATED;
+        $expected = Status::CREATED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -340,7 +340,7 @@ final class UserServicePostTest extends AbstractUnitTestCase
 
         $payload = $service->__invoke($domainData);
 
-        $expected = DomainStatus::CREATED;
+        $expected = Status::CREATED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 

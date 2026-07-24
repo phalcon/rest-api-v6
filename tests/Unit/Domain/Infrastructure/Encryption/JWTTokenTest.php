@@ -59,7 +59,9 @@ final class JWTTokenTest extends AbstractUnitTestCase
     public function testGetObjectThrowsOnCannotDecodeContent(): void
     {
         $this->expectException(TokenValidationException::class);
-        $this->expectExceptionMessage('Invalid Header (not an array)');
+        // Substring match: Phalcon reports the underlying json_decode failure,
+        // whose tail varies with the malformed input.
+        $this->expectExceptionMessage('json_decode error');
 
         // Simulate exception by calling with invalid token
         $this->jwtToken->getObject('invalid.token.content');

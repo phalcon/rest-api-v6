@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Tests\Unit\Domain\Application\Company\Service;
 
-use PayloadInterop\DomainStatus;
+use Phalcon\Domain\Payload\Status;
 use Phalcon\Api\Domain\Application\Company\Service\CompanyGetService;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
 use Phalcon\Api\Tests\Fixtures\Domain\Migrations\CompaniesMigration;
@@ -29,7 +29,7 @@ final class CompanyServiceGetTest extends AbstractUnitTestCase
 
         $payload = $service->__invoke([]);
 
-        $expected = DomainStatus::NOT_FOUND;
+        $expected = Status::NOT_FOUND;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -59,7 +59,7 @@ final class CompanyServiceGetTest extends AbstractUnitTestCase
             ]
         );
 
-        $expected = DomainStatus::SUCCESS;
+        $expected = Status::SUCCESS;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -142,7 +142,7 @@ final class CompanyServiceGetTest extends AbstractUnitTestCase
             ]
         );
 
-        $expected = DomainStatus::NOT_FOUND;
+        $expected = Status::NOT_FOUND;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 

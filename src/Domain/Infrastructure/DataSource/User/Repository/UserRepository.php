@@ -19,7 +19,6 @@ use Phalcon\Api\Domain\Infrastructure\DataSource\User\Mapper\UserMapperInterface
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\UserTypes;
 use Phalcon\Api\Domain\Infrastructure\Enums\Common\FlagsEnum;
 use Phalcon\DataMapper\Pdo\Connection;
-use Phalcon\DataMapper\Query\Select;
 
 /**
  * @phpstan-import-type TCriteria from UserTypes
@@ -89,7 +88,7 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
      */
     public function findOneBy(array $criteria): ?User
     {
-        $select = Select::new($this->connection);
+        $select = $this->factory->newSelect($this->connection);
 
         /** @var TUserRecord $result */
         $result = $select

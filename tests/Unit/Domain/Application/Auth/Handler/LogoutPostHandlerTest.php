@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Tests\Unit\Domain\Application\Auth\Handler;
 
-use PayloadInterop\DomainStatus;
+use Phalcon\Domain\Payload\Status;
 use Phalcon\Api\Domain\Application\Auth\Command\AuthCommandFactory;
 use Phalcon\Api\Domain\Application\Auth\Handler\AuthLoginPostHandler;
 use Phalcon\Api\Domain\Application\Auth\Handler\AuthLogoutPostHandler;
@@ -36,7 +36,7 @@ final class LogoutPostHandlerTest extends AbstractUnitTestCase
         $command = $factory->authenticate([]);
         $payload = $handler->__invoke($command);
 
-        $expected = DomainStatus::UNAUTHORIZED;
+        $expected = Status::NOT_AUTHORIZED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -77,7 +77,7 @@ final class LogoutPostHandlerTest extends AbstractUnitTestCase
         $command = $factory->authenticate($input);
         $payload = $loginHandler->__invoke($command);
 
-        $expected = DomainStatus::SUCCESS;
+        $expected = Status::SUCCESS;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -117,7 +117,7 @@ final class LogoutPostHandlerTest extends AbstractUnitTestCase
         $command = $factory->logout($input);
         $payload = $handler->__invoke($command);
 
-        $expected = DomainStatus::SUCCESS;
+        $expected = Status::SUCCESS;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 

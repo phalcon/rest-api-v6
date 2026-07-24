@@ -17,9 +17,7 @@ use Phalcon\Api\Domain\Infrastructure\DataSource\Company\CompanyTypes;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\UserTypes;
 use Phalcon\DataMapper\Pdo\Connection;
 use Phalcon\DataMapper\Pdo\Exception\Exception as DataMapperException;
-use Phalcon\DataMapper\Query\Delete;
-use Phalcon\DataMapper\Query\Insert;
-use Phalcon\DataMapper\Query\Update;
+use Phalcon\DataMapper\Query\QueryFactory;
 
 /**
  * @phpstan-import-type TCriteria from UserTypes
@@ -38,8 +36,14 @@ abstract class AbstractRepository
      */
     protected string $table = '';
 
+    /**
+     * The query classes lost their static ::new() factory in Phalcon v6;
+     * construction goes through QueryFactory. Defaulted so the existing
+     * container definitions, which pass only the connection, still apply.
+     */
     public function __construct(
         protected readonly Connection $connection,
+        protected readonly QueryFactory $factory = new QueryFactory(),
     ) {
     }
 
@@ -51,10 +55,10 @@ abstract class AbstractRepository
      */
     public function deleteBy(array $criteria): int
     {
-        $delete = Delete::new($this->connection);
+        $delete = $this->factory->newDelete($this->connection);
 
         $statement = $delete
-            ->table($this->table)
+            ->from($this->table)
             ->whereEquals($criteria)
             ->perform()
         ;
@@ -85,7 +89,7 @@ abstract class AbstractRepository
      */
     public function insert(array $columns): int
     {
-        $insert = Insert::new($this->connection);
+        $insert = $this->factory->newInsert($this->connection);
         $insert
             ->into($this->table)
             ->columns($columns)
@@ -104,9 +108,9 @@ abstract class AbstractRepository
      */
     public function update(int $recordId, array $columns): int
     {
-        $update = Update::new($this->connection);
+        $update = $this->factory->newUpdate($this->connection);
         $update
-            ->table($this->table)
+            ->from($this->table)
             ->columns($columns)
             ->where($this->idField . ' = ', $recordId)
             ->perform()

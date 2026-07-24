@@ -20,7 +20,6 @@ use Phalcon\Api\Domain\Infrastructure\DataSource\Company\DTO\CompanyCollection;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Company\DTO\CompanyCriteria;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Company\Mapper\CompanyMapperInterface;
 use Phalcon\DataMapper\Pdo\Connection;
-use Phalcon\DataMapper\Query\Select;
 
 /**
  * @phpstan-import-type TCriteria from CompanyTypes
@@ -53,7 +52,7 @@ class CompanyRepository extends AbstractRepository implements CompanyRepositoryI
      */
     public function find(CompanyCriteria $criteria): CompanyCollection
     {
-        $select = Select::new($this->connection);
+        $select = $this->factory->newSelect($this->connection);
 
         $select->from($this->table);
 
@@ -62,10 +61,16 @@ class CompanyRepository extends AbstractRepository implements CompanyRepositoryI
             $select->whereEquals($columns);
         }
 
+        /**
+         * Phalcon v6 dropped page()/perPage() from the query builder; the
+         * equivalent is an explicit limit and offset.
+         */
+        $offset = max(0, ($criteria->page - 1) * $criteria->perPage);
+
         /** @var TCompanyRecords $results */
         $results = $select
-            ->page($criteria->page)
-            ->perPage($criteria->perPage)
+            ->limit($criteria->perPage)
+            ->offset($offset)
             ->fetchAll()
         ;
 
@@ -98,7 +103,7 @@ class CompanyRepository extends AbstractRepository implements CompanyRepositoryI
      */
     public function findOneBy(array $criteria): ?Company
     {
-        $select = Select::new($this->connection);
+        $select = $this->factory->newSelect($this->connection);
 
         $select->from($this->table);
 

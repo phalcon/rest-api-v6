@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Phalcon\Api\Tests\Unit\Domain\Application\User\Service;
 
 use DateTimeImmutable;
-use PayloadInterop\DomainStatus;
+use Phalcon\Domain\Payload\Status;
 use PDOException;
 use Phalcon\Api\Domain\Application\User\Service\UserPutService;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Mapper\UserMapper;
@@ -78,7 +78,7 @@ final class UserServicePutTest extends AbstractUnitTestCase
 
         $payload = $service->__invoke($updateUser);
 
-        $expected = DomainStatus::ERROR;
+        $expected = Status::ERROR;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -144,7 +144,7 @@ final class UserServicePutTest extends AbstractUnitTestCase
 
         $payload = $service->__invoke($updateUser);
 
-        $expected = DomainStatus::ERROR;
+        $expected = Status::ERROR;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -202,7 +202,7 @@ final class UserServicePutTest extends AbstractUnitTestCase
 
         $payload = $service->__invoke($updateUser);
 
-        $expected = DomainStatus::NOT_FOUND;
+        $expected = Status::NOT_FOUND;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -243,7 +243,7 @@ final class UserServicePutTest extends AbstractUnitTestCase
 
         $payload = $service->__invoke($updateUser);
 
-        $expected = DomainStatus::INVALID;
+        $expected = Status::NOT_VALID;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -295,7 +295,7 @@ final class UserServicePutTest extends AbstractUnitTestCase
 
         $payload = $service->__invoke($domainData);
 
-        $expected = DomainStatus::UPDATED;
+        $expected = Status::UPDATED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -418,7 +418,7 @@ final class UserServicePutTest extends AbstractUnitTestCase
 
         $payload = $service->__invoke($domainData);
 
-        $expected = DomainStatus::UPDATED;
+        $expected = Status::UPDATED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 

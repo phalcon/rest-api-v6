@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Tests\Unit\Domain\Application\Company\Handler;
 
-use PayloadInterop\DomainStatus;
+use Phalcon\Domain\Payload\Status;
 use Phalcon\Api\Domain\Application\Company\Command\CompanyCommandFactory;
 use Phalcon\Api\Domain\Application\Company\Handler\CompanyGetManyHandler;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
@@ -47,7 +47,7 @@ final class CompanyHandlerGetManyTest extends AbstractUnitTestCase
         $command = $factory->getMany([]);
         $payload = $handler->__invoke($command);
 
-        $expected = DomainStatus::SUCCESS;
+        $expected = Status::SUCCESS;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -92,7 +92,7 @@ final class CompanyHandlerGetManyTest extends AbstractUnitTestCase
         $command = $factory->getMany(['page' => 2, 'perPage' => 2]);
         $payload = $handler->__invoke($command);
 
-        $expected = DomainStatus::SUCCESS;
+        $expected = Status::SUCCESS;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -122,7 +122,7 @@ final class CompanyHandlerGetManyTest extends AbstractUnitTestCase
         $command = $factory->getMany(['name' => $companyName1]);
         $payload = $handler->__invoke($command);
 
-        $expected = DomainStatus::SUCCESS;
+        $expected = Status::SUCCESS;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 

@@ -1,10 +1,10 @@
 includes:
-    # Phalcon v6 API changes this application has not migrated to yet. Every
-    # entry is scheduled for Phase 2 and falls into one of two groups:
+    # Four remaining errors, all Phase 2 items:
     #
-    #   - Phalcon\DataMapper\Query\{Select,Insert,Update,Delete}::new() was
-    #     removed (reverted; those enhancements are shelved for v7/v8).
-    #     Construction moves to Phalcon\DataMapper\Query\QueryFactory.
+    #   - Three fetchAll()/fetchOne() calls on the query builder. These are
+    #     real at runtime, routed through Select::__call(), which no static
+    #     analyser can resolve. They clear when the repositories move to an
+    #     explicit fetch API.
     #   - Phalcon\Support\Collection became generic, so EnvManager needs an
     #     @extends annotation.
     #

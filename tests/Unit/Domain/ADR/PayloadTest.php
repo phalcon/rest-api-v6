@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Tests\Unit\Domain\ADR;
 
-use PayloadInterop\DomainStatus;
+use Phalcon\Domain\Payload\Status;
 use Phalcon\Api\Domain\ADR\Payload;
 use Phalcon\Api\Domain\Infrastructure\Enums\Http\HttpCodesEnum;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
@@ -29,7 +29,7 @@ final class PayloadTest extends AbstractUnitTestCase
         $actual   = get_class($payload);
         $this->assertSame($expected, $actual);
 
-        $expected = DomainStatus::CREATED;
+        $expected = Status::CREATED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -43,7 +43,7 @@ final class PayloadTest extends AbstractUnitTestCase
         $data    = ['deleted' => true];
         $payload = Payload::deleted($data);
 
-        $expected = DomainStatus::DELETED;
+        $expected = Status::DELETED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -57,7 +57,7 @@ final class PayloadTest extends AbstractUnitTestCase
         $errors  = [['something' => 'went wrong']];
         $payload = Payload::error($errors);
 
-        $expected = DomainStatus::ERROR;
+        $expected = Status::ERROR;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -71,7 +71,7 @@ final class PayloadTest extends AbstractUnitTestCase
         $errors  = [['field' => 'invalid']];
         $payload = Payload::invalid($errors);
 
-        $expected = DomainStatus::INVALID;
+        $expected = Status::NOT_VALID;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -84,7 +84,7 @@ final class PayloadTest extends AbstractUnitTestCase
     {
         $payload = Payload::notFound();
 
-        $expected = DomainStatus::NOT_FOUND;
+        $expected = Status::NOT_FOUND;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -103,7 +103,7 @@ final class PayloadTest extends AbstractUnitTestCase
         $data    = ['items' => [1, 2, 3]];
         $payload = Payload::success($data);
 
-        $expected = DomainStatus::SUCCESS;
+        $expected = Status::SUCCESS;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -117,7 +117,7 @@ final class PayloadTest extends AbstractUnitTestCase
         $errors  = [['reason' => 'no access']];
         $payload = Payload::unauthorized($errors);
 
-        $expected = DomainStatus::UNAUTHORIZED;
+        $expected = Status::NOT_AUTHORIZED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -136,7 +136,7 @@ final class PayloadTest extends AbstractUnitTestCase
         $data    = ['updated' => true];
         $payload = Payload::updated($data);
 
-        $expected = DomainStatus::UPDATED;
+        $expected = Status::UPDATED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 

@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Tests\Unit\Domain\Application\Company\Handler;
 
-use PayloadInterop\DomainStatus;
+use Phalcon\Domain\Payload\Status;
 use Phalcon\Api\Domain\Application\Company\Command\CompanyCommandFactory;
 use Phalcon\Api\Domain\Application\Company\Handler\CompanyDeleteHandler;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
@@ -40,7 +40,7 @@ final class CompanyHandlerDeleteTest extends AbstractUnitTestCase
         $command = $factory->delete(['id' => $companyId]);
         $payload = $handler->__invoke($command);
 
-        $expected = DomainStatus::DELETED;
+        $expected = Status::DELETED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -60,7 +60,7 @@ final class CompanyHandlerDeleteTest extends AbstractUnitTestCase
          */
         $payload = $handler->__invoke($command);
 
-        $expected = DomainStatus::NOT_FOUND;
+        $expected = Status::NOT_FOUND;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -84,7 +84,7 @@ final class CompanyHandlerDeleteTest extends AbstractUnitTestCase
         $command = $factory->delete(['id' => 0]);
         $payload = $handler->__invoke($command);
 
-        $expected = DomainStatus::NOT_FOUND;
+        $expected = Status::NOT_FOUND;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 

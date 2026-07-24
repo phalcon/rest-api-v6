@@ -46,7 +46,7 @@ final class ValidateTokenStructureMiddlewareTest extends AbstractUnitTestCase
         $this->assertSame([], $data);
 
         $expected = [
-            ['Invalid Header (not an array)'],
+            ['json_decode error: Syntax error'],
         ];
         $actual   = $errors;
         $this->assertSame($expected, $actual);

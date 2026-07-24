@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Tests\Unit\Domain\Application\User\Handler;
 
-use PayloadInterop\DomainStatus;
+use Phalcon\Domain\Payload\Status;
 use Phalcon\Api\Domain\Application\User\Command\UserCommandFactory;
 use Phalcon\Api\Domain\Application\User\Handler\UserGetHandler;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
@@ -31,7 +31,7 @@ final class UserHandlerGetTest extends AbstractUnitTestCase
         $command = $factory->get([]);
         $payload = $handler->__invoke($command);
 
-        $expected = DomainStatus::NOT_FOUND;
+        $expected = Status::NOT_FOUND;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -59,7 +59,7 @@ final class UserHandlerGetTest extends AbstractUnitTestCase
         $command = $factory->get(['id' => $userId]);
         $payload = $handler->__invoke($command);
 
-        $expected = DomainStatus::SUCCESS;
+        $expected = Status::SUCCESS;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -149,7 +149,7 @@ final class UserHandlerGetTest extends AbstractUnitTestCase
         $command = $factory->get(['id' => 999999]);
         $payload = $handler->__invoke($command);
 
-        $expected = DomainStatus::NOT_FOUND;
+        $expected = Status::NOT_FOUND;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 

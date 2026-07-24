@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Phalcon\Api\Tests\Unit\Domain\Application\User\Handler;
 
 use DateTimeImmutable;
-use PayloadInterop\DomainStatus;
+use Phalcon\Domain\Payload\Status;
 use PDOException;
 use Phalcon\Api\Domain\Application\User\Command\UserCommandFactory;
 use Phalcon\Api\Domain\Application\User\Handler\UserPutHandler;
@@ -78,7 +78,7 @@ final class UserHandlerPutTest extends AbstractUnitTestCase
         $command    = $factory->update($updateUser);
         $payload    = $handler->__invoke($command);
 
-        $expected = DomainStatus::ERROR;
+        $expected = Status::ERROR;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -146,7 +146,7 @@ final class UserHandlerPutTest extends AbstractUnitTestCase
         $command    = $factory->update($updateUser);
         $payload    = $handler->__invoke($command);
 
-        $expected = DomainStatus::ERROR;
+        $expected = Status::ERROR;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -206,7 +206,7 @@ final class UserHandlerPutTest extends AbstractUnitTestCase
         $command    = $factory->update($updateUser);
         $payload    = $handler->__invoke($command);
 
-        $expected = DomainStatus::NOT_FOUND;
+        $expected = Status::NOT_FOUND;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -249,7 +249,7 @@ final class UserHandlerPutTest extends AbstractUnitTestCase
         $command    = $factory->update($updateUser);
         $payload    = $handler->__invoke($command);
 
-        $expected = DomainStatus::INVALID;
+        $expected = Status::NOT_VALID;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -303,7 +303,7 @@ final class UserHandlerPutTest extends AbstractUnitTestCase
         $command    = $factory->update($domainData);
         $payload    = $handler->__invoke($command);
 
-        $expected = DomainStatus::UPDATED;
+        $expected = Status::UPDATED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -428,7 +428,7 @@ final class UserHandlerPutTest extends AbstractUnitTestCase
         $command    = $factory->update($domainData);
         $payload    = $handler->__invoke($command);
 
-        $expected = DomainStatus::UPDATED;
+        $expected = Status::UPDATED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 

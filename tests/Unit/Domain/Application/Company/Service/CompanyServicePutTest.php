@@ -15,7 +15,7 @@ namespace Phalcon\Api\Tests\Unit\Domain\Application\Company\Service;
 
 use DateTimeImmutable;
 use Faker\Factory;
-use PayloadInterop\DomainStatus;
+use Phalcon\Domain\Payload\Status;
 use PDOException;
 use Phalcon\Api\Domain\Application\Company\Service\CompanyPutService;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Company\Mapper\CompanyMapper;
@@ -79,7 +79,7 @@ final class CompanyServicePutTest extends AbstractUnitTestCase
 
         $payload = $service->__invoke($updateCompany);
 
-        $expected = DomainStatus::ERROR;
+        $expected = Status::ERROR;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -147,7 +147,7 @@ final class CompanyServicePutTest extends AbstractUnitTestCase
 
         $payload = $service->__invoke($updateCompany);
 
-        $expected = DomainStatus::ERROR;
+        $expected = Status::ERROR;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -193,7 +193,7 @@ final class CompanyServicePutTest extends AbstractUnitTestCase
 
         $payload = $service->__invoke($updateCompany);
 
-        $expected = DomainStatus::NOT_FOUND;
+        $expected = Status::NOT_FOUND;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -226,7 +226,7 @@ final class CompanyServicePutTest extends AbstractUnitTestCase
 
         $payload = $service->__invoke($updateCompany);
 
-        $expected = DomainStatus::INVALID;
+        $expected = Status::NOT_VALID;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -277,7 +277,7 @@ final class CompanyServicePutTest extends AbstractUnitTestCase
 
         $payload = $service->__invoke($domainData);
 
-        $expected = DomainStatus::UPDATED;
+        $expected = Status::UPDATED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -395,7 +395,7 @@ final class CompanyServicePutTest extends AbstractUnitTestCase
 
         $payload = $service->__invoke($domainData);
 
-        $expected = DomainStatus::UPDATED;
+        $expected = Status::UPDATED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 

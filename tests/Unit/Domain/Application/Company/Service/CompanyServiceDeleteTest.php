@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Tests\Unit\Domain\Application\Company\Service;
 
-use PayloadInterop\DomainStatus;
+use Phalcon\Domain\Payload\Status;
 use Phalcon\Api\Domain\Application\Company\Service\CompanyDeleteService;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
 use Phalcon\Api\Tests\Fixtures\Domain\Migrations\CompaniesMigration;
@@ -40,7 +40,7 @@ final class CompanyServiceDeleteTest extends AbstractUnitTestCase
             ]
         );
 
-        $expected = DomainStatus::DELETED;
+        $expected = Status::DELETED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -64,7 +64,7 @@ final class CompanyServiceDeleteTest extends AbstractUnitTestCase
             ]
         );
 
-        $expected = DomainStatus::NOT_FOUND;
+        $expected = Status::NOT_FOUND;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -89,7 +89,7 @@ final class CompanyServiceDeleteTest extends AbstractUnitTestCase
             ]
         );
 
-        $expected = DomainStatus::NOT_FOUND;
+        $expected = Status::NOT_FOUND;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 

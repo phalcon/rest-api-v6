@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Tests\Unit\Domain\Application\Auth\Handler;
 
-use PayloadInterop\DomainStatus;
+use Phalcon\Domain\Payload\Status;
 use Phalcon\Api\Domain\Application\Auth\Command\AuthCommandFactory;
 use Phalcon\Api\Domain\Application\Auth\Handler\AuthLoginPostHandler;
 use Phalcon\Api\Domain\Application\Auth\Handler\AuthRefreshPostHandler;
@@ -37,7 +37,7 @@ final class RefreshPostHandlerTest extends AbstractUnitTestCase
         $command = $factory->refresh([]);
         $payload = $handler->__invoke($command);
 
-        $expected = DomainStatus::UNAUTHORIZED;
+        $expected = Status::NOT_AUTHORIZED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -117,7 +117,7 @@ final class RefreshPostHandlerTest extends AbstractUnitTestCase
         $command = $factory->refresh(['token' => '1234']);
         $payload = $handler->__invoke($command);
 
-        $expected = DomainStatus::UNAUTHORIZED;
+        $expected = Status::NOT_AUTHORIZED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -183,7 +183,7 @@ final class RefreshPostHandlerTest extends AbstractUnitTestCase
         $command = $factory->refresh(['token' => '1234']);
         $payload = $handler->__invoke($command);
 
-        $expected = DomainStatus::UNAUTHORIZED;
+        $expected = Status::NOT_AUTHORIZED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -221,7 +221,7 @@ final class RefreshPostHandlerTest extends AbstractUnitTestCase
         $command = $factory->authenticate($payload);
         $payload = $loginHandler->__invoke($command);
 
-        $expected = DomainStatus::SUCCESS;
+        $expected = Status::SUCCESS;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -231,7 +231,7 @@ final class RefreshPostHandlerTest extends AbstractUnitTestCase
         $command = $factory->refresh(['token' => $jwt['refreshToken']]);
         $payload = $handler->__invoke($command);
 
-        $expected = DomainStatus::SUCCESS;
+        $expected = Status::SUCCESS;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -306,7 +306,7 @@ final class RefreshPostHandlerTest extends AbstractUnitTestCase
         $command = $factory->refresh(['token' => '1234']);
         $payload = $handler->__invoke($command);
 
-        $expected = DomainStatus::UNAUTHORIZED;
+        $expected = Status::NOT_AUTHORIZED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 

@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Phalcon\Api\Tests\Unit\Domain\Application\Company\Handler;
 
 use DateTimeImmutable;
-use PayloadInterop\DomainStatus;
+use Phalcon\Domain\Payload\Status;
 use PDOException;
 use Phalcon\Api\Domain\Application\Company\Command\CompanyCommandFactory;
 use Phalcon\Api\Domain\Application\Company\Handler\CompanyPostHandler;
@@ -77,7 +77,7 @@ final class CompanyHandlerPostTest extends AbstractUnitTestCase
         $command    = $factory->insert($domainData);
         $payload    = $handler->__invoke($command);
 
-        $expected = DomainStatus::ERROR;
+        $expected = Status::ERROR;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -142,7 +142,7 @@ final class CompanyHandlerPostTest extends AbstractUnitTestCase
         $command    = $factory->insert($domainData);
         $payload    = $handler->__invoke($command);
 
-        $expected = DomainStatus::ERROR;
+        $expected = Status::ERROR;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -180,7 +180,7 @@ final class CompanyHandlerPostTest extends AbstractUnitTestCase
         $command       = $factory->insert($domainData);
         $payload       = $handler->__invoke($command);
 
-        $expected = DomainStatus::INVALID;
+        $expected = Status::NOT_VALID;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -232,7 +232,7 @@ final class CompanyHandlerPostTest extends AbstractUnitTestCase
         $command    = $factory->insert($domainData);
         $payload    = $handler->__invoke($command);
 
-        $expected = DomainStatus::CREATED;
+        $expected = Status::CREATED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -349,7 +349,7 @@ final class CompanyHandlerPostTest extends AbstractUnitTestCase
         $command       = $factory->insert($domainData);
         $payload       = $handler->__invoke($command);
 
-        $expected = DomainStatus::CREATED;
+        $expected = Status::CREATED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 

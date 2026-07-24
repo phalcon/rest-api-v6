@@ -31,8 +31,8 @@ use Phalcon\Events\Manager as EventsManager;
 use Phalcon\Filter\FilterFactory;
 use Phalcon\Logger\Adapter\Stream;
 use Phalcon\Logger\Logger;
+use Phalcon\Logger\LoggerInterface;
 use Phalcon\Storage\SerializerFactory;
-use Psr\Log\LoggerInterface;
 
 use function sprintf;
 

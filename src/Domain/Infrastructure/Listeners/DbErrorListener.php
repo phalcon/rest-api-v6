@@ -15,7 +15,7 @@ namespace Phalcon\Api\Domain\Infrastructure\Listeners;
 
 use Phalcon\Api\Domain\Infrastructure\CommandBus\HandlerInterface;
 use Phalcon\Events\Event;
-use Psr\Log\LoggerInterface;
+use Phalcon\Logger\LoggerInterface;
 
 use function get_class;
 

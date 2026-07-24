@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Phalcon\Api\Tests\Unit\Domain\Application\User\Handler;
 
 use DateTimeImmutable;
-use PayloadInterop\DomainStatus;
+use Phalcon\Domain\Payload\Status;
 use PDOException;
 use Phalcon\Api\Domain\Application\User\Command\UserCommandFactory;
 use Phalcon\Api\Domain\Application\User\Handler\UserPostHandler;
@@ -71,7 +71,7 @@ final class UserHandlerPostTest extends AbstractUnitTestCase
 
         $payload = $handler->__invoke($command);
 
-        $expected = DomainStatus::ERROR;
+        $expected = Status::ERROR;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -131,7 +131,7 @@ final class UserHandlerPostTest extends AbstractUnitTestCase
         $command    = $factory->insert($domainData);
         $payload    = $handler->__invoke($command);
 
-        $expected = DomainStatus::ERROR;
+        $expected = Status::ERROR;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -172,7 +172,7 @@ final class UserHandlerPostTest extends AbstractUnitTestCase
         $command    = $factory->insert($domainData);
         $payload    = $handler->__invoke($command);
 
-        $expected = DomainStatus::INVALID;
+        $expected = Status::NOT_VALID;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -220,7 +220,7 @@ final class UserHandlerPostTest extends AbstractUnitTestCase
         $command    = $factory->insert($domainData);
         $payload    = $handler->__invoke($command);
 
-        $expected = DomainStatus::CREATED;
+        $expected = Status::CREATED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
@@ -332,7 +332,7 @@ final class UserHandlerPostTest extends AbstractUnitTestCase
 
         $payload = $handler->__invoke($command);
 
-        $expected = DomainStatus::CREATED;
+        $expected = Status::CREATED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
