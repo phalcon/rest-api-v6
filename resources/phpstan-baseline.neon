@@ -1,0 +1,151 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Call to an undefined static method Phalcon\\DataMapper\\Query\\Delete\:\:new\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: ../src/Domain/Infrastructure/DataSource/AbstractRepository.php
+
+		-
+			message: '#^Call to an undefined static method Phalcon\\DataMapper\\Query\\Insert\:\:new\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: ../src/Domain/Infrastructure/DataSource/AbstractRepository.php
+
+		-
+			message: '#^Call to an undefined static method Phalcon\\DataMapper\\Query\\Update\:\:new\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: ../src/Domain/Infrastructure/DataSource/AbstractRepository.php
+
+		-
+			message: '#^Cannot call method columns\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: ../src/Domain/Infrastructure/DataSource/AbstractRepository.php
+
+		-
+			message: '#^Cannot call method getLastInsertId\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../src/Domain/Infrastructure/DataSource/AbstractRepository.php
+
+		-
+			message: '#^Cannot call method into\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../src/Domain/Infrastructure/DataSource/AbstractRepository.php
+
+		-
+			message: '#^Cannot call method perform\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: ../src/Domain/Infrastructure/DataSource/AbstractRepository.php
+
+		-
+			message: '#^Cannot call method rowCount\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../src/Domain/Infrastructure/DataSource/AbstractRepository.php
+
+		-
+			message: '#^Cannot call method table\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: ../src/Domain/Infrastructure/DataSource/AbstractRepository.php
+
+		-
+			message: '#^Cannot call method where\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../src/Domain/Infrastructure/DataSource/AbstractRepository.php
+
+		-
+			message: '#^Cannot call method whereEquals\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../src/Domain/Infrastructure/DataSource/AbstractRepository.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 1
+			path: ../src/Domain/Infrastructure/DataSource/AbstractRepository.php
+
+		-
+			message: '#^Method Phalcon\\Api\\Domain\\Infrastructure\\DataSource\\AbstractRepository\:\:deleteBy\(\) should return int but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: ../src/Domain/Infrastructure/DataSource/AbstractRepository.php
+
+		-
+			message: '#^Call to an undefined static method Phalcon\\DataMapper\\Query\\Select\:\:new\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 2
+			path: ../src/Domain/Infrastructure/DataSource/Company/Repository/CompanyRepository.php
+
+		-
+			message: '#^Cannot call method fetchAll\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../src/Domain/Infrastructure/DataSource/Company/Repository/CompanyRepository.php
+
+		-
+			message: '#^Cannot call method fetchOne\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../src/Domain/Infrastructure/DataSource/Company/Repository/CompanyRepository.php
+
+		-
+			message: '#^Cannot call method from\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: ../src/Domain/Infrastructure/DataSource/Company/Repository/CompanyRepository.php
+
+		-
+			message: '#^Cannot call method page\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../src/Domain/Infrastructure/DataSource/Company/Repository/CompanyRepository.php
+
+		-
+			message: '#^Cannot call method perPage\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../src/Domain/Infrastructure/DataSource/Company/Repository/CompanyRepository.php
+
+		-
+			message: '#^Cannot call method whereEquals\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: ../src/Domain/Infrastructure/DataSource/Company/Repository/CompanyRepository.php
+
+		-
+			message: '#^Call to an undefined static method Phalcon\\DataMapper\\Query\\Select\:\:new\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: ../src/Domain/Infrastructure/DataSource/User/Repository/UserRepository.php
+
+		-
+			message: '#^Cannot call method fetchOne\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../src/Domain/Infrastructure/DataSource/User/Repository/UserRepository.php
+
+		-
+			message: '#^Cannot call method from\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../src/Domain/Infrastructure/DataSource/User/Repository/UserRepository.php
+
+		-
+			message: '#^Cannot call method whereEquals\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../src/Domain/Infrastructure/DataSource/User/Repository/UserRepository.php
+
+		-
+			message: '#^Class Phalcon\\Api\\Domain\\Infrastructure\\Env\\EnvManager extends generic class Phalcon\\Support\\Collection but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: ../src/Domain/Infrastructure/Env/EnvManager.php

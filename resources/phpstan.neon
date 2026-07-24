@@ -1,3 +1,16 @@
+includes:
+    # Phalcon v6 API changes this application has not migrated to yet. Every
+    # entry is scheduled for Phase 2 and falls into one of two groups:
+    #
+    #   - Phalcon\DataMapper\Query\{Select,Insert,Update,Delete}::new() was
+    #     removed (reverted; those enhancements are shelved for v7/v8).
+    #     Construction moves to Phalcon\DataMapper\Query\QueryFactory.
+    #   - Phalcon\Support\Collection became generic, so EnvManager needs an
+    #     @extends annotation.
+    #
+    # Nothing may be added to this baseline without a matching Phase 2 item.
+    - phpstan-baseline.neon
+
 parameters:
     level: max
     paths:
