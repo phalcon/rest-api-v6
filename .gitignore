@@ -1,9 +1,11 @@
 .bash_history
 .cache
-.config
 .composer/
+.config
 .env
 .local
-storage/logs/
-tests/_output
+.php-cs-fixer.cache
+storage/logs/*.log
+tests/_output/*
+!tests/_output/.gitkeep
 vendor/
