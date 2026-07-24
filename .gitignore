@@ -2,7 +2,6 @@
 .cache
 .config
 .composer/
-composer.lock
 .env
 .local
 storage/logs/
