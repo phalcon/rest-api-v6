@@ -40,19 +40,6 @@ use function str_replace;
  */
 enum RoutesEnum: int
 {
-    /**
-     * Methods
-     */
-    public const DELETE = 'delete';
-    /**
-     * Events
-     */
-    public const EVENT_BEFORE = 'before';
-    public const EVENT_FINISH = 'finish';
-    public const GET          = 'get';
-    public const POST         = 'post';
-    public const PUT          = 'put';
-
     case authLoginPost   = 11;
     case authLogoutPost  = 12;
     case authRefreshPost = 13;
@@ -67,6 +54,34 @@ enum RoutesEnum: int
     case userGet    = 22;
     case userPost   = 23;
     case userPut    = 24;
+    /**
+     * Methods
+     */
+    public const DELETE = 'delete';
+    /**
+     * Events
+     */
+    public const EVENT_BEFORE = 'before';
+    public const EVENT_FINISH = 'finish';
+    public const GET          = 'get';
+    public const POST         = 'post';
+    public const PUT          = 'put';
+
+    /**
+     * @return TMiddleware
+     */
+    public static function middleware(): array
+    {
+        return [
+            NotFoundMiddleware::class               => self::EVENT_BEFORE,
+            HealthMiddleware::class                 => self::EVENT_BEFORE,
+            ValidateTokenPresenceMiddleware::class  => self::EVENT_BEFORE,
+            ValidateTokenStructureMiddleware::class => self::EVENT_BEFORE,
+            ValidateTokenUserMiddleware::class      => self::EVENT_BEFORE,
+            ValidateTokenClaimsMiddleware::class    => self::EVENT_BEFORE,
+            ValidateTokenRevokedMiddleware::class   => self::EVENT_BEFORE,
+        ];
+    }
 
     /**
      * @return string
@@ -95,22 +110,6 @@ enum RoutesEnum: int
             self::companyPut,
             self::userPut    => self::PUT,
         };
-    }
-
-    /**
-     * @return TMiddleware
-     */
-    public static function middleware(): array
-    {
-        return [
-            NotFoundMiddleware::class               => self::EVENT_BEFORE,
-            HealthMiddleware::class                 => self::EVENT_BEFORE,
-            ValidateTokenPresenceMiddleware::class  => self::EVENT_BEFORE,
-            ValidateTokenStructureMiddleware::class => self::EVENT_BEFORE,
-            ValidateTokenUserMiddleware::class      => self::EVENT_BEFORE,
-            ValidateTokenClaimsMiddleware::class    => self::EVENT_BEFORE,
-            ValidateTokenRevokedMiddleware::class   => self::EVENT_BEFORE,
-        ];
     }
 
     /**

@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Tests\Unit\Domain\Application\Company\Handler;
 
-use Phalcon\Domain\Payload\Status;
 use Phalcon\Api\Domain\Application\Company\Command\CompanyCommandFactory;
 use Phalcon\Api\Domain\Application\Company\Handler\CompanyGetManyHandler;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
 use Phalcon\Api\Tests\Fixtures\Domain\Migrations\CompaniesMigration;
+use Phalcon\Domain\Payload\Status;
 
 use function count;
 use function uniqid;

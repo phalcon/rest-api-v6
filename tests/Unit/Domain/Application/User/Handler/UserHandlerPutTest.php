@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Phalcon\Api\Tests\Unit\Domain\Application\User\Handler;
 
 use DateTimeImmutable;
-use Phalcon\Domain\Payload\Status;
 use PDOException;
 use Phalcon\Api\Domain\Application\User\Command\UserCommandFactory;
 use Phalcon\Api\Domain\Application\User\Handler\UserPutHandler;
@@ -22,6 +21,7 @@ use Phalcon\Api\Domain\Infrastructure\DataSource\User\Mapper\UserMapper;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Repository\UserRepository;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
 use Phalcon\Api\Tests\Fixtures\Domain\Migrations\UsersMigration;
+use Phalcon\Domain\Payload\Status;
 use Phalcon\Support\Registry;
 
 use function uniqid;

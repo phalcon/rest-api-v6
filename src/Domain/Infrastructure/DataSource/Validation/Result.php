@@ -44,6 +44,14 @@ final class Result
     }
 
     /**
+     * @return self
+     */
+    public static function success(): self
+    {
+        return new self([]);
+    }
+
+    /**
      * @return TValidatorErrors
      */
     public function getErrors(): array
@@ -79,13 +87,5 @@ final class Result
     public function setMeta(string $key, mixed $value): void
     {
         $this->meta[$key] = $value;
-    }
-
-    /**
-     * @return self
-     */
-    public static function success(): self
-    {
-        return new self([]);
     }
 }

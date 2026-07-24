@@ -43,6 +43,13 @@ abstract class AbstractUnitTestCase extends TalonUnitTestCase
      */
     protected Container $container;
 
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->container = new Container();
+    }
+
     /**
      * @param string $table
      * @param array  $criteria
@@ -285,13 +292,6 @@ abstract class AbstractUnitTestCase extends TalonUnitTestCase
         ;
 
         return $tokenObject->getToken();
-    }
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->container = new Container();
     }
 
     /**

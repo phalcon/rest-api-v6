@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Tests\Unit\Domain\ADR;
 
-use Phalcon\Domain\Payload\Status;
 use Phalcon\Api\Domain\ADR\Payload;
 use Phalcon\Api\Domain\Infrastructure\Enums\Http\HttpCodesEnum;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
+use Phalcon\Domain\Payload\Status;
 
 final class PayloadTest extends AbstractUnitTestCase
 {

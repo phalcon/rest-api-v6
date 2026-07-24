@@ -15,7 +15,6 @@ namespace Phalcon\Api\Tests\Unit\Domain\Application\Company\Handler;
 
 use DateTimeImmutable;
 use Faker\Factory;
-use Phalcon\Domain\Payload\Status;
 use PDOException;
 use Phalcon\Api\Domain\Application\Company\Command\CompanyCommandFactory;
 use Phalcon\Api\Domain\Application\Company\Handler\CompanyPutHandler;
@@ -24,6 +23,7 @@ use Phalcon\Api\Domain\Infrastructure\DataSource\Company\Repository\CompanyRepos
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Mapper\UserMapper;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
 use Phalcon\Api\Tests\Fixtures\Domain\Migrations\CompaniesMigration;
+use Phalcon\Domain\Payload\Status;
 use Phalcon\Support\Registry;
 
 use function uniqid;

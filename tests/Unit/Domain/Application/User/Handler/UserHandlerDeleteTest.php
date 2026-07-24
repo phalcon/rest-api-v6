@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Tests\Unit\Domain\Application\User\Handler;
 
-use Phalcon\Domain\Payload\Status;
 use Phalcon\Api\Domain\Application\User\Command\UserCommandFactory;
 use Phalcon\Api\Domain\Application\User\Handler\UserDeleteHandler;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
 use Phalcon\Api\Tests\Fixtures\Domain\Migrations\UsersMigration;
+use Phalcon\Domain\Payload\Status;
 
 final class UserHandlerDeleteTest extends AbstractUnitTestCase
 {

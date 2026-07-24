@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Phalcon\Api\Tests\Unit\Domain\Application\User\Service;
 
 use DateTimeImmutable;
-use Phalcon\Domain\Payload\Status;
 use PDOException;
 use Phalcon\Api\Domain\Application\User\Handler\UserPostHandler;
 use Phalcon\Api\Domain\Application\User\Service\UserPostService;
@@ -22,6 +21,7 @@ use Phalcon\Api\Domain\Infrastructure\DataSource\User\Mapper\UserMapper;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Repository\UserRepository;
 use Phalcon\Api\Domain\Infrastructure\Env\EnvManager;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
+use Phalcon\Domain\Payload\Status;
 use Phalcon\Support\Registry;
 
 use function array_key_first;

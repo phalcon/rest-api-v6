@@ -95,6 +95,17 @@ final readonly class CompanyCriteria
     }
 
     /**
+     * @param int $value
+     * @param int $defaultValue
+     *
+     * @return int
+     */
+    private static function checkLimit(int $value, int $defaultValue): int
+    {
+        return $value > 0 ? $value : $defaultValue;
+    }
+
+    /**
      * @return TCompanyDbRecordOptional
      */
     public function toArray(): array
@@ -118,16 +129,5 @@ final readonly class CompanyCriteria
         ];
 
         return array_filter($criteria);
-    }
-
-    /**
-     * @param int $value
-     * @param int $defaultValue
-     *
-     * @return int
-     */
-    private static function checkLimit(int $value, int $defaultValue): int
-    {
-        return $value > 0 ? $value : $defaultValue;
     }
 }

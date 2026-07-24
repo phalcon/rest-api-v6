@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Tests\Unit\Domain\Application\Auth\Service;
 
-use Phalcon\Domain\Payload\Status;
 use Phalcon\Api\Domain\Application\Auth\Service\AuthLoginPostService;
 use Phalcon\Api\Domain\Application\Auth\Service\AuthRefreshPostService;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Mapper\UserMapper;
@@ -21,6 +20,7 @@ use Phalcon\Api\Domain\Infrastructure\Encryption\JWTToken;
 use Phalcon\Api\Domain\Infrastructure\Enums\Http\HttpCodesEnum;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
 use Phalcon\Api\Tests\Fixtures\Domain\Migrations\UsersMigration;
+use Phalcon\Domain\Payload\Status;
 use Phalcon\Encryption\Security\JWT\Token\Item;
 use Phalcon\Encryption\Security\JWT\Token\Token;
 use PHPUnit\Framework\Attributes\BackupGlobals;

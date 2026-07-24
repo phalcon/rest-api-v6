@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Phalcon\Api\Tests\Unit\Domain\Application\Company\Handler;
 
 use DateTimeImmutable;
-use Phalcon\Domain\Payload\Status;
 use PDOException;
 use Phalcon\Api\Domain\Application\Company\Command\CompanyCommandFactory;
 use Phalcon\Api\Domain\Application\Company\Handler\CompanyPostHandler;
@@ -23,6 +22,7 @@ use Phalcon\Api\Domain\Infrastructure\DataSource\Company\Mapper\CompanyMapperInt
 use Phalcon\Api\Domain\Infrastructure\DataSource\Company\Repository\CompanyRepository;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Mapper\UserMapper;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
+use Phalcon\Domain\Payload\Status;
 use Phalcon\Support\Registry;
 
 use function array_key_first;
