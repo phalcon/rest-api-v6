@@ -16,10 +16,23 @@ namespace Phalcon\Api\Tests\Unit\Container;
 use Phalcon\ADR\Container\AdrProvider;
 use Phalcon\Api\Container\ApiProvider;
 use Phalcon\Api\Domain\Application\Auth\Facade\AuthFacade;
+use Phalcon\Api\Domain\Application\Auth\Handler\AuthLoginPostHandler;
+use Phalcon\Api\Domain\Application\Auth\Handler\AuthLogoutPostHandler;
+use Phalcon\Api\Domain\Application\Auth\Handler\AuthRefreshPostHandler;
 use Phalcon\Api\Domain\Application\Company\Facade\CompanyFacade;
+use Phalcon\Api\Domain\Application\Company\Handler\CompanyPostHandler;
+use Phalcon\Api\Domain\Application\Company\Handler\CompanyPutHandler;
 use Phalcon\Api\Domain\Application\User\Facade\UserFacade;
+use Phalcon\Api\Domain\Application\User\Handler\UserPostHandler;
+use Phalcon\Api\Domain\Application\User\Handler\UserPutHandler;
+use Phalcon\Api\Domain\Infrastructure\DataSource\Auth\Validator\AuthLoginValidator;
+use Phalcon\Api\Domain\Infrastructure\DataSource\Auth\Validator\AuthTokenValidator;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Company\Repository\CompanyRepositoryInterface;
+use Phalcon\Api\Domain\Infrastructure\DataSource\Company\Validator\CompanyValidator;
+use Phalcon\Api\Domain\Infrastructure\DataSource\Company\Validator\CompanyValidatorUpdate;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Repository\UserRepositoryInterface;
+use Phalcon\Api\Domain\Infrastructure\DataSource\User\Validator\UserValidator;
+use Phalcon\Api\Domain\Infrastructure\DataSource\User\Validator\UserValidatorUpdate;
 use Phalcon\Api\Domain\Infrastructure\Encryption\TokenManagerInterface;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
 use Phalcon\Cache\Cache;
@@ -79,6 +92,32 @@ final class ApiProviderTest extends AbstractUnitTestCase
         $this->assertInstanceOf(EventsManagerContract::class, $manager);
         $this->assertTrue($manager->hasListeners('user'));
         $this->assertTrue($manager->hasListeners('company'));
+    }
+
+    public function testPinsTheCorrectValidatorToEachHandler(): void
+    {
+        $container = $this->newContainer();
+
+        $expected = [
+            AuthLoginPostHandler::class   => AuthLoginValidator::class,
+            AuthLogoutPostHandler::class  => AuthTokenValidator::class,
+            AuthRefreshPostHandler::class => AuthTokenValidator::class,
+            CompanyPostHandler::class     => CompanyValidator::class,
+            CompanyPutHandler::class      => CompanyValidatorUpdate::class,
+            UserPostHandler::class        => UserValidator::class,
+            UserPutHandler::class         => UserValidatorUpdate::class,
+        ];
+
+        foreach ($expected as $handlerClass => $validatorClass) {
+            $handler   = $container->get($handlerClass);
+            $validator = $this->getProtectedProperty($handler, 'validator');
+
+            $this->assertInstanceOf(
+                $validatorClass,
+                $validator,
+                $handlerClass . ' received the wrong validator'
+            );
+        }
     }
 
     public function testReplacesTheNoopLogger(): void

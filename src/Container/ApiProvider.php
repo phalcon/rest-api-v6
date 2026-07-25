@@ -16,26 +16,39 @@ namespace Phalcon\Api\Container;
 use Phalcon\ADR\Container\AdrProvider;
 use Phalcon\Api\Domain\Application\Auth\Command\AuthCommandFactory;
 use Phalcon\Api\Domain\Application\Auth\Command\AuthCommandFactoryInterface;
+use Phalcon\Api\Domain\Application\Auth\Handler\AuthLoginPostHandler;
+use Phalcon\Api\Domain\Application\Auth\Handler\AuthLogoutPostHandler;
+use Phalcon\Api\Domain\Application\Auth\Handler\AuthRefreshPostHandler;
 use Phalcon\Api\Domain\Application\Company\Command\CompanyCommandFactory;
 use Phalcon\Api\Domain\Application\Company\Command\CompanyCommandFactoryInterface;
+use Phalcon\Api\Domain\Application\Company\Handler\CompanyPostHandler;
+use Phalcon\Api\Domain\Application\Company\Handler\CompanyPutHandler;
 use Phalcon\Api\Domain\Application\User\Command\UserCommandFactory;
 use Phalcon\Api\Domain\Application\User\Command\UserCommandFactoryInterface;
+use Phalcon\Api\Domain\Application\User\Handler\UserPostHandler;
+use Phalcon\Api\Domain\Application\User\Handler\UserPutHandler;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\CommandBus;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\CommandBusInterface;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\ContainerHandlerLocator;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\HandlerLocatorInterface;
 use Phalcon\Api\Domain\Infrastructure\Constants\Cache as CacheConstants;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Auth\Sanitizer\AuthSanitizer;
+use Phalcon\Api\Domain\Infrastructure\DataSource\Auth\Validator\AuthLoginValidator;
+use Phalcon\Api\Domain\Infrastructure\DataSource\Auth\Validator\AuthTokenValidator;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Company\Mapper\CompanyMapper;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Company\Mapper\CompanyMapperInterface;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Company\Repository\CompanyRepository;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Company\Repository\CompanyRepositoryInterface;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Company\Sanitizer\CompanySanitizer;
+use Phalcon\Api\Domain\Infrastructure\DataSource\Company\Validator\CompanyValidator;
+use Phalcon\Api\Domain\Infrastructure\DataSource\Company\Validator\CompanyValidatorUpdate;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Mapper\UserMapper;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Mapper\UserMapperInterface;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Repository\UserRepository;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Repository\UserRepositoryInterface;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Sanitizer\UserSanitizer;
+use Phalcon\Api\Domain\Infrastructure\DataSource\User\Validator\UserValidator;
+use Phalcon\Api\Domain\Infrastructure\DataSource\User\Validator\UserValidatorUpdate;
 use Phalcon\Api\Domain\Infrastructure\Encryption\TokenCache;
 use Phalcon\Api\Domain\Infrastructure\Encryption\TokenCacheInterface;
 use Phalcon\Api\Domain\Infrastructure\Encryption\TokenManager;
@@ -49,8 +62,11 @@ use Phalcon\Contracts\Container\Service\Collection;
 use Phalcon\Contracts\Events\Manager as EventsManagerContract;
 use Phalcon\Contracts\Logger\Logger as LoggerContract;
 use Phalcon\DataMapper\Pdo\Connection;
+use Phalcon\Events\ManagerInterface as EventsManagerInterface;
 use Phalcon\Filter\FilterFactory;
 use Phalcon\Filter\FilterInterface;
+use Phalcon\Filter\Validation;
+use Phalcon\Filter\Validation\ValidationInterface;
 use Phalcon\Logger\Adapter\Stream;
 use Phalcon\Logger\Logger;
 use Phalcon\Logger\LoggerInterface;
@@ -85,6 +101,7 @@ class ApiProvider extends AdrProvider
         $this->registerEvents($container);
         $this->registerBindings($container);
         $this->registerCommandFactories($container);
+        $this->registerHandlers($container);
     }
 
     /**
@@ -109,6 +126,12 @@ class ApiProvider extends AdrProvider
                 return new ContainerHandlerLocator($ioc);
             }
         );
+
+        /**
+         * Every validator composes a Phalcon validation object; it takes no
+         * constructor arguments, so the binding is all autowiring needs.
+         */
+        $container->bind(ValidationInterface::class, Validation::class);
 
         $container->bind(CompanyMapperInterface::class, CompanyMapper::class);
         $container->bind(CompanyRepositoryInterface::class, CompanyRepository::class);
@@ -283,6 +306,14 @@ class ApiProvider extends AdrProvider
      */
     protected function registerEvents(Collection $container): void
     {
+        /**
+         * The domain handlers type-hint Phalcon\Events\ManagerInterface,
+         * which extends the ADR contract AdrProvider registers under. Alias
+         * rather than register, so both names resolve to the one instance
+         * and the listener attached below is present either way.
+         */
+        $container->setAlias(EventsManagerContract::class, EventsManagerInterface::class);
+
         $container->extend(
             EventsManagerContract::class,
             function (EventsManagerContract $manager, Collection $ioc) {
@@ -304,6 +335,41 @@ class ApiProvider extends AdrProvider
                 return $manager;
             }
         );
+    }
+
+    /**
+     * ValidatorInterface is implemented once, by AbstractValidator, which
+     * every concrete validator extends. Autowiring therefore finds only an
+     * abstract it cannot instantiate, so each handler names the validator
+     * it wants - insert rules versus update rules for the put/post pairs,
+     * and login versus token rules for auth.
+     *
+     * Handlers are resolved by concrete class name, since the command bus
+     * derives the handler from the command class rather than an interface,
+     * so a single key per handler is enough here.
+     *
+     * @param Collection $container
+     *
+     * @return void
+     */
+    protected function registerHandlers(Collection $container): void
+    {
+        $pins = [
+            AuthLoginPostHandler::class   => AuthLoginValidator::class,
+            AuthLogoutPostHandler::class  => AuthTokenValidator::class,
+            AuthRefreshPostHandler::class => AuthTokenValidator::class,
+            CompanyPostHandler::class     => CompanyValidator::class,
+            CompanyPutHandler::class      => CompanyValidatorUpdate::class,
+            UserPostHandler::class        => UserValidator::class,
+            UserPutHandler::class         => UserValidatorUpdate::class,
+        ];
+
+        foreach ($pins as $handlerClass => $validatorClass) {
+            $container
+                ->set($handlerClass, $handlerClass)
+                ->setArgument('validator', new LazyGet($validatorClass))
+            ;
+        }
     }
 
     /**
