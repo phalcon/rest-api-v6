@@ -19,7 +19,9 @@ use Phalcon\Contracts\ADR\Payload\Payload;
 use Phalcon\Contracts\ADR\Responder\Formatter\Formatter;
 
 use function is_array;
+use function is_string;
 use function json_encode;
+use function ksort;
 use function sha1;
 use function str_contains;
 
@@ -80,19 +82,37 @@ final class EnvelopeJsonFormatter implements Formatter
         /** @var string $status */
         $status = $payload->getStatus();
 
+        $extras = $payload->getExtras();
+        $ref    = '';
+
+        if (is_array($extras) && isset($extras['ref']) && is_string($extras['ref'])) {
+            $ref = $extras['ref'];
+        }
+
         $timestamp = Dates::toUTC();
         $encoded   = json_encode(['data' => $data, 'errors' => $errors]);
         $encoded   = (false === $encoded) ? '' : $encoded;
 
+        $meta = [
+            'code'      => $this->statusMapper->toHttpCode($status),
+            'hash'      => sha1($timestamp . $encoded),
+            'message'   => true === empty($errors) ? 'success' : 'error',
+            'timestamp' => $timestamp,
+        ];
+
+        /**
+         * Only error payloads carry a correlation reference, so successful
+         * responses keep the meta shape they have always had.
+         */
+        if ('' !== $ref) {
+            $meta['ref'] = $ref;
+            ksort($meta);
+        }
+
         $content = [
             'data'   => $data,
             'errors' => $errors,
-            'meta'   => [
-                'code'      => $this->statusMapper->toHttpCode($status),
-                'hash'      => sha1($timestamp . $encoded),
-                'message'   => true === empty($errors) ? 'success' : 'error',
-                'timestamp' => $timestamp,
-            ],
+            'meta'   => $meta,
         ];
 
         $json = json_encode($content);
