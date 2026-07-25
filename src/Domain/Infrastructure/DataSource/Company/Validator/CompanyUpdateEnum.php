@@ -20,8 +20,8 @@ use Phalcon\Filter\Validation\Validator\PresenceOf;
 
 enum CompanyUpdateEnum implements ValidatorEnumInterface
 {
-    case id;
     case email;
+    case id;
 
     public function allowEmpty(): bool
     {

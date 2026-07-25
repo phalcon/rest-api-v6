@@ -18,21 +18,21 @@ use Phalcon\Filter\Filter;
 
 enum UserSanitizerEnum implements SanitizerEnumInterface
 {
-    case id;
-    case status;
+    case createdDate;
+    case createdUserId;
     case email;
-    case password;
-    case namePrefix;
+    case id;
+    case issuer;
     case nameFirst;
     case nameLast;
     case nameMiddle;
+    case namePrefix;
     case nameSuffix;
-    case issuer;
-    case tokenPassword;
-    case tokenId;
+    case password;
     case preferences;
-    case createdDate;
-    case createdUserId;
+    case status;
+    case tokenId;
+    case tokenPassword;
     case updatedDate;
     case updatedUserId;
 

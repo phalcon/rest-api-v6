@@ -45,17 +45,17 @@ enum CompanyDefinitionsEnum: string implements DefinitionsEnumInterface
 {
     case CompanyCommandFactory  = CompanyCommandFactory::class;
     case CompanyDelete          = CompanyDeleteService::class;
-    case CompanyGet             = CompanyGetService::class;
-    case CompanyGetMany         = CompanyGetManyService::class;
-    case CompanyPost            = CompanyPostService::class;
-    case CompanyPut             = CompanyPutService::class;
-    case CompanyFacade          = CompanyFacade::class;
     case CompanyDeleteHandler   = CompanyDeleteHandler::class;
+    case CompanyFacade          = CompanyFacade::class;
+    case CompanyGet             = CompanyGetService::class;
     case CompanyGetHandler      = CompanyGetHandler::class;
+    case CompanyGetMany         = CompanyGetManyService::class;
     case CompanyGetManyHandler  = CompanyGetManyHandler::class;
-    case CompanyPostHandler     = CompanyPostHandler::class;
-    case CompanyPutHandler      = CompanyPutHandler::class;
     case CompanyMapper          = CompanyMapper::class;
+    case CompanyPost            = CompanyPostService::class;
+    case CompanyPostHandler     = CompanyPostHandler::class;
+    case CompanyPut             = CompanyPutService::class;
+    case CompanyPutHandler      = CompanyPutHandler::class;
     case CompanyRepository      = CompanyRepository::class;
     case CompanySanitizer       = CompanySanitizer::class;
     case CompanyValidator       = CompanyValidator::class;

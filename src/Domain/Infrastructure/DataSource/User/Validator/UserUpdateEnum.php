@@ -20,12 +20,12 @@ use Phalcon\Filter\Validation\Validator\PresenceOf;
 
 enum UserUpdateEnum implements ValidatorEnumInterface
 {
-    case id;
     case email;
-    case password;
+    case id;
     case issuer;
-    case tokenPassword;
+    case password;
     case tokenId;
+    case tokenPassword;
 
     public function allowEmpty(): bool
     {

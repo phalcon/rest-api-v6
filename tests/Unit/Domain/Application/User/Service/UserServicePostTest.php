@@ -197,10 +197,10 @@ final class UserServicePostTest extends AbstractUnitTestCase
         $expected = [
             ['Field email is required'],
             ['Field email must be an email address'],
-            ['Field password is required'],
             ['Field issuer is required'],
-            ['Field tokenPassword is required'],
+            ['Field password is required'],
             ['Field tokenId is required'],
+            ['Field tokenPassword is required'],
         ];
         $actual   = $errors;
         $this->assertSame($expected, $actual);

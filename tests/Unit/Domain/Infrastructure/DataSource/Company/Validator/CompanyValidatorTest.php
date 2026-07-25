@@ -34,9 +34,9 @@ final class CompanyValidatorTest extends AbstractUnitTestCase
         $actual = $result->getErrors();
 
         $expected = [
-            ['Field name is required'],
             ['Field email is required'],
             ['Field email must be an email address'],
+            ['Field name is required'],
         ];
 
         $this->assertSame($expected, $actual);

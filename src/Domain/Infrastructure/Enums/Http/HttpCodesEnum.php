@@ -21,13 +21,12 @@ use Phalcon\Api\Domain\Infrastructure\Enums\EnumsInterface;
  */
 enum HttpCodesEnum: int implements EnumsInterface
 {
-    /**
-     * Regular HTTP codes
-     */
-    case OK           = 200;
-    case BadRequest   = 400;
-    case NotFound     = 404;
-    case Unauthorized = 401;
+    case AppCannotConnectToDatabase         = 3404;
+    case AppCannotCreateDatabaseRecord      = 3405;
+    case AppCannotDeleteDatabaseRecord      = 3406;
+    case AppCannotUpdateDatabaseRecord      = 3407;
+    case AppIncorrectCredentials            = 3408;
+    case AppInvalidArguments                = 3409;
 
     /**
      * Application specific codes
@@ -35,13 +34,6 @@ enum HttpCodesEnum: int implements EnumsInterface
     case AppMalformedPayload                = 3400;
     case AppRecordsNotFound                 = 3401;
     case AppResourceNotFound                = 3402;
-    case AppUnauthorized                    = 3403;
-    case AppCannotConnectToDatabase         = 3404;
-    case AppCannotCreateDatabaseRecord      = 3405;
-    case AppCannotDeleteDatabaseRecord      = 3406;
-    case AppCannotUpdateDatabaseRecord      = 3407;
-    case AppIncorrectCredentials            = 3408;
-    case AppInvalidArguments                = 3409;
     case AppTokenInvalidAudience            = 3410;
     case AppTokenInvalidCannotDecodeContent = 3411;
     case AppTokenInvalidIdentifier          = 3412;
@@ -53,7 +45,15 @@ enum HttpCodesEnum: int implements EnumsInterface
     case AppTokenNotValid                   = 3418;
     case AppTokenSignatureNotValid          = 3419;
     case AppTokenUnsupportedHeaderFound     = 3420;
+    case AppUnauthorized                    = 3403;
     case AppValidationFailed                = 3421;
+    case BadRequest   = 400;
+    case NotFound     = 404;
+    /**
+     * Regular HTTP codes
+     */
+    case OK           = 200;
+    case Unauthorized = 401;
 
 
     /**

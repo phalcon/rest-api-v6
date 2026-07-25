@@ -18,23 +18,23 @@ use Phalcon\Filter\Filter;
 
 enum CompanySanitizerEnum implements SanitizerEnumInterface
 {
-    case id;
-    case name;
-    case phone;
-    case email;
-    case website;
     case addressLine1;
     case addressLine2;
     case city;
-    case stateProvince;
-    case zipCode;
     case country;
     case createdDate;
     case createdUserId;
-    case updatedDate;
-    case updatedUserId;
+    case email;
+    case id;
+    case name;
     case page;
     case perPage;
+    case phone;
+    case stateProvince;
+    case updatedDate;
+    case updatedUserId;
+    case website;
+    case zipCode;
 
     public function default(): mixed
     {

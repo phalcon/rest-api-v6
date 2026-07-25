@@ -20,10 +20,10 @@ use Phalcon\Filter\Validation\Validator\PresenceOf;
 enum UserInsertEnum implements ValidatorEnumInterface
 {
     case email;
-    case password;
     case issuer;
-    case tokenPassword;
+    case password;
     case tokenId;
+    case tokenPassword;
 
     public function allowEmpty(): bool
     {

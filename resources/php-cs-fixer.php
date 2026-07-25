@@ -30,20 +30,8 @@ return (new Config())
                 'sort_algorithm' => 'alpha',
                 'imports_order'  => ['class', 'function', 'const'],
             ],
-            /**
-             * Grouping only - sort_algorithm is 'none' on purpose.
-             *
-             * Enum case order is semantic in this application: the sanitizer
-             * and validator enums produce their results in declaration order
-             * and the tests assert those exact arrays. sort_algorithm applies
-             * to every group at once, so alphabetising would silently reorder
-             * cases and change behaviour. Members are still grouped
-             * (constants, properties, constructor, then methods, each public
-             * before protected before private); alphabetising within a group
-             * stays a manual convention, which the codebase already follows.
-             */
             'ordered_class_elements' => [
-                'sort_algorithm' => 'none',
+                'sort_algorithm' => 'alpha',
                 'order'          => [
                     'use_trait',
                     'case',

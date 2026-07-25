@@ -19,8 +19,8 @@ use Phalcon\Filter\Validation\Validator\PresenceOf;
 
 enum CompanyInsertEnum implements ValidatorEnumInterface
 {
-    case name;
     case email;
+    case name;
 
     public function allowEmpty(): bool
     {

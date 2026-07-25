@@ -43,15 +43,15 @@ enum UserDefinitionsEnum: string implements DefinitionsEnumInterface
 {
     case UserCommandFactory  = UserCommandFactory::class;
     case UserDelete          = UserDeleteService::class;
-    case UserGet             = UserGetService::class;
-    case UserPost            = UserPostService::class;
-    case UserPut             = UserPutService::class;
-    case UserFacade          = UserFacade::class;
     case UserDeleteHandler   = UserDeleteHandler::class;
+    case UserFacade          = UserFacade::class;
+    case UserGet             = UserGetService::class;
     case UserGetHandler      = UserGetHandler::class;
-    case UserPostHandler     = UserPostHandler::class;
-    case UserPutHandler      = UserPutHandler::class;
     case UserMapper          = UserMapper::class;
+    case UserPost            = UserPostService::class;
+    case UserPostHandler     = UserPostHandler::class;
+    case UserPut             = UserPutService::class;
+    case UserPutHandler      = UserPutHandler::class;
     case UserRepository      = UserRepository::class;
     case UserSanitizer       = UserSanitizer::class;
     case UserValidator       = UserValidator::class;

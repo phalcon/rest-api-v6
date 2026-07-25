@@ -253,8 +253,8 @@ final class UserServicePutTest extends AbstractUnitTestCase
         $errors = $actual['errors'];
 
         $expected = [
-            ['Field id is not a valid absolute integer and greater than 0'],
             ['Field email must be an email address'],
+            ['Field id is not a valid absolute integer and greater than 0'],
         ];
         $actual   = $errors;
         $this->assertSame($expected, $actual);

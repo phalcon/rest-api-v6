@@ -38,15 +38,15 @@ use Phalcon\Filter\Validation;
 enum AuthDefinitionsEnum: string implements DefinitionsEnumInterface
 {
     case AuthCommandFactory = AuthCommandFactory::class;
-    case AuthLoginPost      = AuthLoginPostService::class;
-    case AuthLogoutPost     = AuthLogoutPostService::class;
-    case AuthRefreshPost    = AuthRefreshPostService::class;
     case AuthFacade         = AuthFacade::class;
     case AuthLoginHandler   = AuthLoginPostHandler::class;
-    case AuthLogoutHandler  = AuthLogoutPostHandler::class;
-    case AuthRefreshHandler = AuthRefreshPostHandler::class;
-    case AuthSanitizer      = AuthSanitizer::class;
+    case AuthLoginPost      = AuthLoginPostService::class;
     case AuthLoginValidator = AuthLoginValidator::class;
+    case AuthLogoutHandler  = AuthLogoutPostHandler::class;
+    case AuthLogoutPost     = AuthLogoutPostService::class;
+    case AuthRefreshHandler = AuthRefreshPostHandler::class;
+    case AuthRefreshPost    = AuthRefreshPostService::class;
+    case AuthSanitizer      = AuthSanitizer::class;
     case AuthTokenValidator = AuthTokenValidator::class;
     case AuthTransformer    = AuthTransformer::class;
 

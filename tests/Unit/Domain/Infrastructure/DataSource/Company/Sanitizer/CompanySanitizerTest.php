@@ -27,23 +27,23 @@ final class CompanySanitizerTest extends AbstractUnitTestCase
         $sanitizer = new CompanySanitizer($filter);
 
         $expected = [
-            'id'            => 0,
-            'name'          => null,
-            'phone'         => null,
-            'email'         => null,
-            'website'       => null,
             'addressLine1'  => null,
             'addressLine2'  => null,
             'city'          => null,
-            'stateProvince' => null,
-            'zipCode'       => null,
             'country'       => null,
             'createdDate'   => null,
             'createdUserId' => 0,
-            'updatedDate'   => null,
-            'updatedUserId' => 0,
+            'email'         => null,
+            'id'            => 0,
+            'name'          => null,
             'page'          => 1,
             'perPage'       => 10,
+            'phone'         => null,
+            'stateProvince' => null,
+            'updatedDate'   => null,
+            'updatedUserId' => 0,
+            'website'       => null,
+            'zipCode'       => null,
         ];
         $actual   = $sanitizer->sanitize([]);
         $this->assertSame($expected, $actual);
@@ -76,23 +76,23 @@ final class CompanySanitizerTest extends AbstractUnitTestCase
         ];
 
         $expected = [
-            'id'            => 123,
-            'name'          => 'some ',
-            'phone'         => 'some ',
-            'email'         => 'John.Doenewsletter+spam@example.COM',
-            'website'       => 'some ',
             'addressLine1'  => 'some ',
             'addressLine2'  => 'some ',
             'city'          => 'some ',
-            'stateProvince' => 'some ',
-            'zipCode'       => 'some ',
             'country'       => 'some ',
             'createdDate'   => 'some ',
             'createdUserId' => 123,
-            'updatedDate'   => null,
-            'updatedUserId' => 123,
+            'email'         => 'John.Doenewsletter+spam@example.COM',
+            'id'            => 123,
+            'name'          => 'some ',
             'page'          => 1,
             'perPage'       => 10,
+            'phone'         => 'some ',
+            'stateProvince' => 'some ',
+            'updatedDate'   => null,
+            'updatedUserId' => 123,
+            'website'       => 'some ',
+            'zipCode'       => 'some ',
         ];
         $actual   = $sanitizer->sanitize($companyData);
         $this->assertSame($expected, $actual);

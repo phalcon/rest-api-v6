@@ -15,27 +15,27 @@ namespace Phalcon\Api\Domain\Infrastructure\Enums\Common;
 
 enum JWTEnum: string
 {
-    /**
-     * Headers
-     */
-    case Type        = 'typ';
     case Algo        = 'alg';
-    case ContentType = 'cty';
 
     /**
      * Claims
      */
     case Audience       = 'aud';
+    case ContentType = 'cty';
     case ExpirationTime = 'exp';
     case Id             = 'jti';
     case IssuedAt       = 'iat';
     case Issuer         = 'iss';
     case NotBefore      = 'nbf';
+    case Refresh = 'rid';
     case Subject        = 'sub';
+    /**
+     * Headers
+     */
+    case Type        = 'typ';
 
     /**
      * Custom claims
      */
     case UserId  = 'uid';
-    case Refresh = 'rid';
 }

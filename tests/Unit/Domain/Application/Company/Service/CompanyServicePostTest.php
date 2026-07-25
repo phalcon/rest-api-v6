@@ -184,9 +184,9 @@ final class CompanyServicePostTest extends AbstractUnitTestCase
         $errors = $actual['errors'];
 
         $expected = [
-            ['Field name is required'],
             ['Field email is required'],
             ['Field email must be an email address'],
+            ['Field name is required'],
         ];
         $actual   = $errors;
         $this->assertSame($expected, $actual);
