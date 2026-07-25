@@ -24,9 +24,9 @@ use Phalcon\ADR\Responder\StatusMapper;
  * That means a validation failure, a server error and a creation all answer
  * 200 today. The ADR defaults answer 422, 500 and 201 respectively.
  *
- * Those defaults are correct and this application's behaviour is not. The
+ * Those defaults are correct and this application's behavior is not. The
  * overrides below preserve the current responses so the ADR migration
- * changes no observable behaviour, and any later regression can be
+ * changes no observable behavior, and any later regression can be
  * attributed to the migration rather than to a contract change.
  *
  * PHASE 3 removes these three overrides and adds the Location header that a
