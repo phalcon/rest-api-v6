@@ -195,7 +195,7 @@ final class LogoutPostServiceTest extends AbstractUnitTestCase
         /** @var AuthLogoutPostService $service */
         $logoutService = $this->container->get(AuthLogoutPostService::class);
         /** @var Cache $cache */
-        $cache = $this->container->getShared(Cache::class);
+        $cache = $this->container->get(Cache::class);
         /** @var AuthLoginPostService $service */
         $service   = $this->container->get(AuthLoginPostService::class);
         $migration = new UsersMigration($this->getConnection());

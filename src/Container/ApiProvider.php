@@ -74,6 +74,7 @@ use Phalcon\Api\Domain\Infrastructure\DataSource\User\Repository\UserRepositoryI
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Sanitizer\UserSanitizer;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Validator\UserValidator;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Validator\UserValidatorUpdate;
+use Phalcon\Api\Domain\Infrastructure\DataSource\Validation\AbsInt;
 use Phalcon\Api\Domain\Infrastructure\Encryption\TokenCache;
 use Phalcon\Api\Domain\Infrastructure\Encryption\TokenCacheInterface;
 use Phalcon\Api\Domain\Infrastructure\Encryption\TokenManager;
@@ -87,6 +88,7 @@ use Phalcon\Cache\Cache;
 use Phalcon\Container\Resolver\Lazy\Get as LazyGet;
 use Phalcon\Contracts\ADR\Responder\Responder as ResponderContract;
 use Phalcon\Contracts\Container\Service\Collection;
+use Phalcon\Contracts\Container\Service\Lifetime;
 use Phalcon\Contracts\Events\Manager as EventsManagerContract;
 use Phalcon\Contracts\Logger\Logger as LoggerContract;
 use Phalcon\DataMapper\Pdo\Connection;
@@ -185,24 +187,48 @@ class ApiProvider extends AdrProvider
          */
         $container->bind(CommandBusInterface::class, CommandBus::class);
         $container->set(
-            HandlerLocatorInterface::class,
+            ContainerHandlerLocator::class,
             function (Collection $ioc) {
                 return new ContainerHandlerLocator($ioc);
             }
         );
+        $container->setAlias(ContainerHandlerLocator::class, HandlerLocatorInterface::class);
 
         /**
-         * Every validator composes a Phalcon validation object; it takes no
-         * constructor arguments, so the binding is all autowiring needs.
+         * TRANSIENT, and it matters. Phalcon\Filter\Validation accumulates
+         * rules and messages across validate() calls, so a single shared
+         * instance leaks one validator's rules into the next - the login
+         * validator's email and password rules would still be attached when
+         * the token validator ran, and every token check would fail.
+         *
+         * The container shares by default; this is the one service that
+         * must not be.
          */
-        $container->bind(ValidationInterface::class, Validation::class);
+        $container
+            ->bind(ValidationInterface::class, Validation::class)
+            ->setLifetime(Lifetime::TRANSIENT)
+        ;
 
-        $container->bind(CompanyMapperInterface::class, CompanyMapper::class);
-        $container->bind(CompanyRepositoryInterface::class, CompanyRepository::class);
-        $container->bind(TokenCacheInterface::class, TokenCache::class);
-        $container->bind(TokenManagerInterface::class, TokenManager::class);
-        $container->bind(UserMapperInterface::class, UserMapper::class);
-        $container->bind(UserRepositoryInterface::class, UserRepository::class);
+        /**
+         * The concrete is the canonical key and the interface is an alias of
+         * it, rather than two separate definitions. One instance answers to
+         * both names, so replacing the concrete - which is what the tests do
+         * when they inject a mock repository - also replaces what a consumer
+         * asking for the interface receives.
+         */
+        $aliases = [
+            CompanyMapper::class     => CompanyMapperInterface::class,
+            CompanyRepository::class => CompanyRepositoryInterface::class,
+            TokenCache::class        => TokenCacheInterface::class,
+            TokenManager::class      => TokenManagerInterface::class,
+            UserMapper::class        => UserMapperInterface::class,
+            UserRepository::class    => UserRepositoryInterface::class,
+        ];
+
+        foreach ($aliases as $concrete => $interface) {
+            $container->set($concrete, $concrete);
+            $container->setAlias($concrete, $interface);
+        }
     }
 
     /**
@@ -432,6 +458,30 @@ class ApiProvider extends AdrProvider
             $container
                 ->set($handlerClass, $handlerClass)
                 ->setArgument('validator', new LazyGet($validatorClass))
+            ;
+        }
+
+        /**
+         * TRANSIENT for the same reason ValidationInterface is: every call
+         * to runValidations() adds its rules to the composed validation
+         * object, so a shared validator accumulates them and reports the
+         * same message twice on a second call. The old container built
+         * validators fresh on every resolution; this preserves that.
+         */
+        $transient = [
+            AbsInt::class,
+            AuthLoginValidator::class,
+            AuthTokenValidator::class,
+            CompanyValidator::class,
+            CompanyValidatorUpdate::class,
+            UserValidator::class,
+            UserValidatorUpdate::class,
+        ];
+
+        foreach ($transient as $validatorClass) {
+            $container
+                ->set($validatorClass, $validatorClass)
+                ->setLifetime(Lifetime::TRANSIENT)
             ;
         }
     }

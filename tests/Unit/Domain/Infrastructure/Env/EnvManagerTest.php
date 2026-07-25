@@ -23,7 +23,7 @@ final class EnvManagerTest extends AbstractUnitTestCase
     public function testAppEnvReturnsDefault(): void
     {
         /** @var EnvManager $env */
-        $env = $this->container->getShared(EnvManager::class);
+        $env = $this->container->get(EnvManager::class);
 
         $expected = 'development';
         $actual   = $env->appEnv();
@@ -35,7 +35,7 @@ final class EnvManagerTest extends AbstractUnitTestCase
         $_ENV = ['APP_ENV' => 'production'];
 
         /** @var EnvManager $env */
-        $env = $this->container->getShared(EnvManager::class);
+        $env = $this->container->get(EnvManager::class);
 
         $expected = 'production';
         $actual   = $env->appEnv();
@@ -45,7 +45,7 @@ final class EnvManagerTest extends AbstractUnitTestCase
     public function testAppLogLevelReturnsDefault(): void
     {
         /** @var EnvManager $env */
-        $env = $this->container->getShared(EnvManager::class);
+        $env = $this->container->get(EnvManager::class);
 
         $expected = 1;
         $actual   = $env->appLogLevel();
@@ -57,7 +57,7 @@ final class EnvManagerTest extends AbstractUnitTestCase
         $_ENV = ['APP_LOG_LEVEL' => 5];
 
         /** @var EnvManager $env */
-        $env = $this->container->getShared(EnvManager::class);
+        $env = $this->container->get(EnvManager::class);
 
         $expected = 5;
         $actual   = $env->appLogLevel();
@@ -67,7 +67,7 @@ final class EnvManagerTest extends AbstractUnitTestCase
     public function testAppPathReturnsRoot(): void
     {
         /** @var EnvManager $env */
-        $env = $this->container->getShared(EnvManager::class);
+        $env = $this->container->get(EnvManager::class);
 
         $expected = dirname(__DIR__, 5);
         $actual   = $env->appPath();
@@ -77,7 +77,7 @@ final class EnvManagerTest extends AbstractUnitTestCase
     public function testAppTimezoneReturnsDefault(): void
     {
         /** @var EnvManager $env */
-        $env = $this->container->getShared(EnvManager::class);
+        $env = $this->container->get(EnvManager::class);
 
         $expected = 'UTC';
         $actual   = $env->appTimezone();
@@ -89,7 +89,7 @@ final class EnvManagerTest extends AbstractUnitTestCase
         $_ENV = ['APP_TIMEZONE' => 'America/Los_Angeles'];
 
         /** @var EnvManager $env */
-        $env = $this->container->getShared(EnvManager::class);
+        $env = $this->container->get(EnvManager::class);
 
         $expected = 'America/Los_Angeles';
         $actual   = $env->appTimezone();
@@ -99,7 +99,7 @@ final class EnvManagerTest extends AbstractUnitTestCase
     public function testGetFromDotEnvLoad(): void
     {
         /** @var EnvManager $env */
-        $env = $this->container->getShared(EnvManager::class);
+        $env = $this->container->get(EnvManager::class);
 
         $_ENV = [
             'APP_ENV_ADAPTER'   => 'dotenv',

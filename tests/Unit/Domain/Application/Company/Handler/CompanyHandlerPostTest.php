@@ -44,7 +44,7 @@ final class CompanyHandlerPostTest extends AbstractUnitTestCase
         ;
         $companyRepository->method('insert')->willReturn(0);
 
-        $this->container->setShared(CompanyRepository::class, $companyRepository);
+        $this->container->set(CompanyRepository::class, $companyRepository);
 
         /** @var CompanyPostHandler $handler */
         $handler = $this->container->get(CompanyPostHandler::class);
@@ -106,7 +106,7 @@ final class CompanyHandlerPostTest extends AbstractUnitTestCase
             ->willThrowException(new PDOException($message))
         ;
 
-        $this->container->setShared(CompanyRepository::class, $companyRepository);
+        $this->container->set(CompanyRepository::class, $companyRepository);
 
         /** @var CompanyPostHandler $handler */
         $handler = $this->container->get(CompanyPostHandler::class);

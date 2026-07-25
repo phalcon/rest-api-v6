@@ -44,7 +44,7 @@ final class CompanyServicePostTest extends AbstractUnitTestCase
         ;
         $companyRepository->method('insert')->willReturn(0);
 
-        $this->container->setShared(CompanyRepository::class, $companyRepository);
+        $this->container->set(CompanyRepository::class, $companyRepository);
 
         /** @var CompanyPostService $service */
         $service = $this->container->get(CompanyPostService::class);
@@ -104,7 +104,7 @@ final class CompanyServicePostTest extends AbstractUnitTestCase
             ->willThrowException(new PDOException($message))
         ;
 
-        $this->container->setShared(CompanyRepository::class, $companyRepository);
+        $this->container->set(CompanyRepository::class, $companyRepository);
 
         /** @var CompanyPostService $service */
         $service = $this->container->get(CompanyPostService::class);

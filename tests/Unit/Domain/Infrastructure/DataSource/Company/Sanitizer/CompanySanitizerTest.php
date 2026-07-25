@@ -13,17 +13,17 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Tests\Unit\Domain\Infrastructure\DataSource\Company\Sanitizer;
 
-use Phalcon\Api\Domain\Infrastructure\Container;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Company\Sanitizer\CompanySanitizer;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
 use Phalcon\Filter\Filter;
+use Phalcon\Filter\FilterInterface;
 
 final class CompanySanitizerTest extends AbstractUnitTestCase
 {
     public function testEmpty(): void
     {
         /** @var Filter $filter */
-        $filter    = $this->container->getShared(Container::FILTER);
+        $filter    = $this->container->get(FilterInterface::class);
         $sanitizer = new CompanySanitizer($filter);
 
         $expected = [
@@ -52,7 +52,7 @@ final class CompanySanitizerTest extends AbstractUnitTestCase
     public function testObject(): void
     {
         /** @var Filter $filter */
-        $filter    = $this->container->getShared(Container::FILTER);
+        $filter    = $this->container->get(FilterInterface::class);
         $sanitizer = new CompanySanitizer($filter);
 
         $companyData = [

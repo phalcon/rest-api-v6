@@ -13,17 +13,17 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Tests\Unit\Domain\Infrastructure\DataSource\Auth\Sanitizer;
 
-use Phalcon\Api\Domain\Infrastructure\Container;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Auth\Sanitizer\AuthSanitizer;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
 use Phalcon\Filter\Filter;
+use Phalcon\Filter\FilterInterface;
 
 final class AuthSanitizerTest extends AbstractUnitTestCase
 {
     public function testEmpty(): void
     {
         /** @var Filter $filter */
-        $filter    = $this->container->getShared(Container::FILTER);
+        $filter    = $this->container->get(FilterInterface::class);
         $sanitizer = new AuthSanitizer($filter);
 
         $expected = [
@@ -38,7 +38,7 @@ final class AuthSanitizerTest extends AbstractUnitTestCase
     public function testObject(): void
     {
         /** @var Filter $filter */
-        $filter    = $this->container->getShared(Container::FILTER);
+        $filter    = $this->container->get(FilterInterface::class);
         $sanitizer = new AuthSanitizer($filter);
 
         $userData = [

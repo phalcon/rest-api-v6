@@ -19,10 +19,10 @@ use Phalcon\Api\Domain\Application\User\Command\UserDeleteCommand;
 use Phalcon\Api\Domain\Application\User\Command\UserGetCommand;
 use Phalcon\Api\Domain\Application\User\Command\UserPostCommand;
 use Phalcon\Api\Domain\Application\User\Command\UserPutCommand;
-use Phalcon\Api\Domain\Infrastructure\Container;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Sanitizer\UserSanitizer;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
 use Phalcon\Filter\Filter;
+use Phalcon\Filter\FilterInterface;
 
 use function json_encode;
 
@@ -101,7 +101,7 @@ final class UserCommandFactoryTest extends AbstractUnitTestCase
     {
         $sanitizer = $this->container->get(UserSanitizer::class);
         /** @var Filter $filter */
-        $filter  = $this->container->get(Container::FILTER);
+        $filter  = $this->container->get(FilterInterface::class);
         $factory = new UserCommandFactory($sanitizer);
         $faker   = FakerFactory::create();
 
@@ -184,7 +184,7 @@ final class UserCommandFactoryTest extends AbstractUnitTestCase
     {
         $sanitizer = $this->container->get(UserSanitizer::class);
         /** @var Filter $filter */
-        $filter  = $this->container->get(Container::FILTER);
+        $filter  = $this->container->get(FilterInterface::class);
         $factory = new UserCommandFactory($sanitizer);
         $faker   = FakerFactory::create();
 

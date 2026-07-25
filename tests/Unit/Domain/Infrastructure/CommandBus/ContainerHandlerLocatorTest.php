@@ -17,6 +17,7 @@ use Phalcon\Api\Domain\Infrastructure\CommandBus\ContainerHandlerLocator;
 use Phalcon\Api\Domain\Infrastructure\Exceptions\HandlerRuntimeException;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
 use Phalcon\Api\Tests\Fixtures\Domain\Application\Command\CommandFixture;
+use Phalcon\Api\Tests\Fixtures\Domain\Application\Command\OrphanCommandFixture;
 use Phalcon\Api\Tests\Fixtures\Domain\Application\Handler\HandlerFixture;
 
 use function uniqid;
@@ -46,11 +47,11 @@ final class ContainerHandlerLocatorTest extends AbstractUnitTestCase
     {
         $this->expectException(HandlerRuntimeException::class);
         $this->expectExceptionMessage(
-            'No handler configured for ' . CommandFixture::class
+            'No handler configured for ' . OrphanCommandFixture::class
         );
 
         $name    = uniqid('name-');
-        $command = new CommandFixture($name);
+        $command = new OrphanCommandFixture($name);
 
         /** @var ContainerHandlerLocator $locator */
         $locator = $this->container->get(ContainerHandlerLocator::class);

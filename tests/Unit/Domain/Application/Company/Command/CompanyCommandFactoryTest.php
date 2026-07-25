@@ -19,10 +19,10 @@ use Phalcon\Api\Domain\Application\Company\Command\CompanyDeleteCommand;
 use Phalcon\Api\Domain\Application\Company\Command\CompanyGetCommand;
 use Phalcon\Api\Domain\Application\Company\Command\CompanyPostCommand;
 use Phalcon\Api\Domain\Application\Company\Command\CompanyPutCommand;
-use Phalcon\Api\Domain\Infrastructure\Container;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Company\Sanitizer\CompanySanitizer;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
 use Phalcon\Filter\Filter;
+use Phalcon\Filter\FilterInterface;
 
 final class CompanyCommandFactoryTest extends AbstractUnitTestCase
 {
@@ -95,7 +95,7 @@ final class CompanyCommandFactoryTest extends AbstractUnitTestCase
     {
         $sanitizer = $this->container->get(CompanySanitizer::class);
         /** @var Filter $filter */
-        $filter  = $this->container->get(Container::FILTER);
+        $filter  = $this->container->get(FilterInterface::class);
         $factory = new CompanyCommandFactory($sanitizer);
         $faker   = FakerFactory::create();
 
@@ -187,7 +187,7 @@ final class CompanyCommandFactoryTest extends AbstractUnitTestCase
     {
         $sanitizer = $this->container->get(CompanySanitizer::class);
         /** @var Filter $filter */
-        $filter  = $this->container->get(Container::FILTER);
+        $filter  = $this->container->get(FilterInterface::class);
         $factory = new CompanyCommandFactory($sanitizer);
         $faker   = FakerFactory::create();
 

@@ -56,7 +56,7 @@ final class UserHandlerPutTest extends AbstractUnitTestCase
         $userRepository->method('update')->willReturn(0);
         $userRepository->method('findById')->willReturn($findByUser);
 
-        $this->container->setShared(UserRepository::class, $userRepository);
+        $this->container->set(UserRepository::class, $userRepository);
 
         /** @var UserPutHandler $handler */
         $handler = $this->container->get(UserPutHandler::class);
@@ -121,7 +121,7 @@ final class UserHandlerPutTest extends AbstractUnitTestCase
             ->willThrowException(new PDOException($message))
         ;
 
-        $this->container->setShared(UserRepository::class, $userRepository);
+        $this->container->set(UserRepository::class, $userRepository);
 
         /** @var UserPutHandler $handler */
         $handler = $this->container->get(UserPutHandler::class);
@@ -178,7 +178,7 @@ final class UserHandlerPutTest extends AbstractUnitTestCase
         ;
         $userRepository->method('findById')->willReturn(null);
 
-        $this->container->setShared(UserRepository::class, $userRepository);
+        $this->container->set(UserRepository::class, $userRepository);
 
         /** @var UserPutHandler $handler */
         $handler = $this->container->get(UserPutHandler::class);

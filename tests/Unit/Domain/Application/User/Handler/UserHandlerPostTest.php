@@ -42,7 +42,7 @@ final class UserHandlerPostTest extends AbstractUnitTestCase
         ;
         $userRepository->method('insert')->willReturn(0);
 
-        $this->container->setShared(UserRepository::class, $userRepository);
+        $this->container->set(UserRepository::class, $userRepository);
 
         /** @var UserPostHandler $handler */
         $handler = $this->container->get(UserPostHandler::class);
@@ -100,7 +100,7 @@ final class UserHandlerPostTest extends AbstractUnitTestCase
             ->willThrowException(new PDOException($message))
         ;
 
-        $this->container->setShared(UserRepository::class, $userRepository);
+        $this->container->set(UserRepository::class, $userRepository);
 
         /** @var UserPostHandler $handler */
         $handler = $this->container->get(UserPostHandler::class);

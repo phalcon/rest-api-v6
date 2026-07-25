@@ -53,7 +53,7 @@ final class CompanyServicePutTest extends AbstractUnitTestCase
         $companyRepository->method('update')->willReturn(0);
         $companyRepository->method('findById')->willReturn($findByCompany);
 
-        $this->container->setShared(CompanyRepository::class, $companyRepository);
+        $this->container->set(CompanyRepository::class, $companyRepository);
 
         /**
          * Add a user in the repository for the session
@@ -118,7 +118,7 @@ final class CompanyServicePutTest extends AbstractUnitTestCase
             ->willThrowException(new PDOException($message))
         ;
 
-        $this->container->setShared(CompanyRepository::class, $companyRepository);
+        $this->container->set(CompanyRepository::class, $companyRepository);
 
         /**
          * Add a user in the repository for the session
@@ -171,7 +171,7 @@ final class CompanyServicePutTest extends AbstractUnitTestCase
         ;
         $companyRepository->method('findById')->willReturn(null);
 
-        $this->container->setShared(CompanyRepository::class, $companyRepository);
+        $this->container->set(CompanyRepository::class, $companyRepository);
 
         /** @var CompanyPutService $service */
         $service = $this->container->get(CompanyPutService::class);

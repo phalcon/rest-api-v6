@@ -17,7 +17,6 @@ use DateTimeImmutable;
 use Phalcon\Api\Domain\Infrastructure\Constants\Cache as CacheConstants;
 use Phalcon\Api\Domain\Infrastructure\Constants\Dates;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Mapper\UserMapper;
-use Phalcon\Api\Domain\Infrastructure\Enums\Http\RoutesEnum;
 use Phalcon\Api\Domain\Infrastructure\Env\EnvManager;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
 use Phalcon\Api\Tests\Fixtures\Domain\Migrations\UsersMigration;
@@ -37,9 +36,9 @@ final class UserServiceDispatchTest extends AbstractUnitTestCase
     public function testDispatchGet(): void
     {
         /** @var EnvManager $env */
-        $env = $this->container->getShared(EnvManager::class);
+        $env = $this->container->get(EnvManager::class);
         /** @var Cache $cache */
-        $cache = $this->container->getShared(Cache::class);
+        $cache = $this->container->get(Cache::class);
         /** @var UserMapper $userMapper */
         $userMapper = $this->container->get(UserMapper::class);
 
@@ -76,7 +75,7 @@ final class UserServiceDispatchTest extends AbstractUnitTestCase
             'REQUEST_METHOD'     => 'GET',
             'REQUEST_TIME_FLOAT' => $time,
             'HTTP_AUTHORIZATION' => 'Bearer ' . $token,
-            'REQUEST_URI'        => RoutesEnum::userGet->endpoint(),
+            'REQUEST_URI'        => '/user',
         ];
 
         $_GET = [

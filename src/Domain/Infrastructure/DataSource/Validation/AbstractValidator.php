@@ -15,6 +15,7 @@ namespace Phalcon\Api\Domain\Infrastructure\DataSource\Validation;
 
 use Phalcon\Api\Domain\Infrastructure\CommandBus\CommandInterface;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Interface\ValidatorEnumInterface;
+use Phalcon\Filter\Validation;
 use Phalcon\Filter\Validation\ValidationInterface;
 use Phalcon\Filter\Validation\ValidatorInterface as PhalconValidator;
 
@@ -55,6 +56,20 @@ abstract class AbstractValidator implements ValidatorInterface
         $enum = $this->fields;
         /** @var ValidatorEnumInterface[] $elements */
         $elements = $enum::cases();
+
+        /**
+         * The composed validation object accumulates rules, so a second call
+         * would add this enum's rules again and report every failure twice -
+         * and because the container hands the same instance to more than one
+         * validator, one validator's rules would otherwise leak into the
+         * next. Starting from an empty set makes this idempotent.
+         *
+         * ValidationInterface exposes no way to clear rules, so this is
+         * guarded on the concrete rather than widening the contract.
+         */
+        if ($this->validation instanceof Validation) {
+            $this->validation->setValidators([]);
+        }
 
         /** @var ValidatorEnumInterface $element */
         foreach ($elements as $element) {

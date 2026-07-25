@@ -16,12 +16,14 @@ namespace Phalcon\Api\Tests;
 use DateTimeImmutable;
 use Faker\Factory;
 use PDO;
+use Phalcon\ADR\Container\AdrProvider;
+use Phalcon\Api\Container\ApiProvider;
 use Phalcon\Api\Domain\Infrastructure\Constants\Dates;
-use Phalcon\Api\Domain\Infrastructure\Container;
 use Phalcon\Api\Domain\Infrastructure\Encryption\Security;
 use Phalcon\Api\Domain\Infrastructure\Enums\Common\JWTEnum;
 use Phalcon\Api\Tests\Fixtures\Domain\Migrations\CompaniesMigration;
 use Phalcon\Api\Tests\Fixtures\Domain\Migrations\UsersMigration;
+use Phalcon\Container\Container;
 use Phalcon\DataMapper\Pdo\Connection;
 use Phalcon\Encryption\Security\JWT\Builder;
 use Phalcon\Encryption\Security\JWT\Signer\Hmac;
@@ -47,7 +49,12 @@ abstract class AbstractUnitTestCase extends TalonUnitTestCase
     {
         parent::setUp();
 
-        $this->container = new Container();
+        $container = new Container();
+
+        (new AdrProvider())->provide($container);
+        (new ApiProvider())->provide($container);
+
+        $this->container = $container;
     }
 
     /**
@@ -85,7 +92,7 @@ abstract class AbstractUnitTestCase extends TalonUnitTestCase
     {
         if (null === $this->connection) {
             /** @var Connection $connection */
-            $connection = $this->container->getShared(Connection::class);
+            $connection = $this->container->get(Connection::class);
 
             $this->connection = $connection;
         }
@@ -207,7 +214,7 @@ abstract class AbstractUnitTestCase extends TalonUnitTestCase
         $faker    = Factory::create();
         $password = $fields['usr_password'] ?? $this->getStrongPassword();
         /** @var Security $security */
-        $security = $this->container->getShared(Security::class);
+        $security = $this->container->get(Security::class);
 
         $password = $security->hash($password);
 

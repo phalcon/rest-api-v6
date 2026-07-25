@@ -56,7 +56,7 @@ final class UserServicePutTest extends AbstractUnitTestCase
         $userRepository->method('update')->willReturn(0);
         $userRepository->method('findById')->willReturn($findByUser);
 
-        $this->container->setShared(UserRepository::class, $userRepository);
+        $this->container->set(UserRepository::class, $userRepository);
 
         /** @var UserPutService $service */
         $service = $this->container->get(UserPutService::class);
@@ -119,7 +119,7 @@ final class UserServicePutTest extends AbstractUnitTestCase
             ->willThrowException(new PDOException($message))
         ;
 
-        $this->container->setShared(UserRepository::class, $userRepository);
+        $this->container->set(UserRepository::class, $userRepository);
 
         /** @var UserPutService $service */
         $service = $this->container->get(UserPutService::class);
@@ -174,7 +174,7 @@ final class UserServicePutTest extends AbstractUnitTestCase
         ;
         $userRepository->method('findById')->willReturn(null);
 
-        $this->container->setShared(UserRepository::class, $userRepository);
+        $this->container->set(UserRepository::class, $userRepository);
 
         /** @var UserPutService $service */
         $service = $this->container->get(UserPutService::class);

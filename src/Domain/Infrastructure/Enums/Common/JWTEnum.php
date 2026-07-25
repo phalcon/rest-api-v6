@@ -21,13 +21,13 @@ enum JWTEnum: string
      * Claims
      */
     case Audience       = 'aud';
-    case ContentType = 'cty';
+    case ContentType    = 'cty';
     case ExpirationTime = 'exp';
     case Id             = 'jti';
     case IssuedAt       = 'iat';
     case Issuer         = 'iss';
     case NotBefore      = 'nbf';
-    case Refresh = 'rid';
+    case Refresh        = 'rid';
     case Subject        = 'sub';
     /**
      * Headers

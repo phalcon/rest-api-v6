@@ -17,6 +17,10 @@ use Phalcon\Api\Domain\Infrastructure\Exceptions\HandlerRuntimeException;
 use Phalcon\Contracts\Container\Service\Collection;
 use Phalcon\Di\DiInterface;
 
+use function class_exists;
+use function get_class;
+use function str_replace;
+
 final readonly class ContainerHandlerLocator implements HandlerLocatorInterface
 {
     /**
@@ -56,7 +60,15 @@ final readonly class ContainerHandlerLocator implements HandlerLocatorInterface
             $commandClass
         );
 
-        if (true !== $this->container->has($handlerClass)) {
+        /**
+         * class_exists first: the native container autowires, so has() is
+         * true for any resolvable class and would never report a missing
+         * handler on its own.
+         */
+        if (
+            true !== class_exists($handlerClass) ||
+            true !== $this->container->has($handlerClass)
+        ) {
             throw HandlerRuntimeException::new(
                 "No handler configured for $commandClass"
             );

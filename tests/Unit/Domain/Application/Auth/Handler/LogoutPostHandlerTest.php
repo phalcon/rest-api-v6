@@ -54,7 +54,7 @@ final class LogoutPostHandlerTest extends AbstractUnitTestCase
         /** @var AuthLoginPostHandler $handler */
         $loginHandler = $this->container->get(AuthLoginPostHandler::class);
         /** @var Cache $cache */
-        $cache = $this->container->getShared(Cache::class);
+        $cache = $this->container->get(Cache::class);
         /** @var AuthLogoutPostHandler $handler */
         $handler = $this->container->get(AuthLogoutPostHandler::class);
         /** @var AuthCommandFactory $factory */
