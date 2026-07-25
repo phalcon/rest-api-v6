@@ -55,7 +55,10 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "optimize-autoloader": true,
-        "allow-plugins": {}
+        "allow-plugins": {},
+        "platform": {
+            "php": "8.2.0"
+        }
     },
     "scripts": {
         "analyze": "phpstan analyse -c resources/phpstan.neon --memory-limit 1024M",
