@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Phalcon\Api\Tests\Unit\Container;
 
 use Phalcon\ADR\Container\AdrProvider;
+use Phalcon\ADR\ErrorResponder;
 use Phalcon\Api\Container\ApiProvider;
 use Phalcon\Api\Domain\Application\Auth\Facade\AuthFacade;
 use Phalcon\Api\Domain\Application\Auth\Handler\AuthLoginPostHandler;
@@ -81,6 +82,20 @@ final class ApiProviderTest extends AbstractUnitTestCase
                 $binding . ' was not bound to a concrete'
             );
         }
+    }
+
+    public function testConfiguresTheErrorResponderWithTheApplicationChain(): void
+    {
+        $container = $this->newContainer();
+
+        /**
+         * Application::handle() resolves this by class name when something
+         * throws, so it has to be registered under exactly that key.
+         */
+        $this->assertInstanceOf(
+            ErrorResponder::class,
+            $container->get(ErrorResponder::class)
+        );
     }
 
     public function testExtendsRatherThanRedefinesTheEventsManager(): void

@@ -26,6 +26,15 @@ use function rand;
 
 final class TokenManagerTest extends AbstractUnitTestCase
 {
+    public function testGetErrorMessageReportsWhyParsingFailed(): void
+    {
+        /** @var TokenManager $manager */
+        $manager = $this->container->get(TokenManager::class);
+
+        $this->assertNull($manager->getObject('not-a-token'));
+        $this->assertNotEmpty($manager->getErrorMessage());
+    }
+
     public function testGetObjectSuccess(): void
     {
         /** @var EnvManager $env */

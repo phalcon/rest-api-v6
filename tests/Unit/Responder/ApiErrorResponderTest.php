@@ -38,6 +38,21 @@ final class ApiErrorResponderTest extends AbstractUnitTestCase
         $this->assertSame('abc123', $body['meta']['ref']);
     }
 
+    public function testRendersAnUnauthenticatedFailure(): void
+    {
+        $payload = (new Payload())
+            ->withStatus(Status::NOT_AUTHENTICATED)
+            ->withResult(['message' => 'Unauthorized', 'ref' => 'abc123'])
+        ;
+
+        $response = $this->respondTo($payload);
+        $body     = json_decode($response->getContent(), true);
+
+        $this->assertSame(401, $response->getStatusCode());
+        $this->assertSame([HttpCodesEnum::AppUnauthorized->error()], $body['errors']);
+        $this->assertSame('error', $body['meta']['message']);
+    }
+
     public function testRendersAnUnmappedFailureAsServerError(): void
     {
         $payload = (new Payload())
