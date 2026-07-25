@@ -14,15 +14,21 @@ declare(strict_types=1);
 namespace Phalcon\Api\Domain\Infrastructure\CommandBus;
 
 use Phalcon\Api\Domain\Infrastructure\Exceptions\HandlerRuntimeException;
+use Phalcon\Contracts\Container\Service\Collection;
 use Phalcon\Di\DiInterface;
 
 final readonly class ContainerHandlerLocator implements HandlerLocatorInterface
 {
     /**
-     * @param DiInterface $container
+     * Accepts either container. Phalcon\Di\Di is what the application boots
+     * on today; Phalcon\Container\Container is what the ADR layer uses. Both
+     * expose has() and get(), which is all this class needs, so the union
+     * lets the two coexist until the switchover retires the former.
+     *
+     * @param DiInterface|Collection $container
      */
     public function __construct(
-        private DiInterface $container,
+        private DiInterface|Collection $container,
     ) {
     }
 
