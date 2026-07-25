@@ -13,13 +13,14 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Tests\Fixtures\Domain\Application\Handler;
 
-use Phalcon\Api\Domain\ADR\Payload;
+use Phalcon\ADR\Payload\Payload;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\CommandInterface;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\HandlerInterface;
+use Phalcon\Contracts\ADR\Payload\Payload as PayloadContract;
 
 final readonly class HandlerFixture implements HandlerInterface
 {
-    public function __invoke(CommandInterface $command): Payload
+    public function __invoke(CommandInterface $command): PayloadContract
     {
         return Payload::success(['Name: ' . $command->name]);
     }

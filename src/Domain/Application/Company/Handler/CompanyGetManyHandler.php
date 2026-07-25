@@ -13,13 +13,14 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Domain\Application\Company\Handler;
 
-use Phalcon\Api\Domain\ADR\Payload;
+use Phalcon\ADR\Payload\Payload;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\CommandInterface;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\HandlerInterface;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Company\DTO\Company;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Company\DTO\CompanyCriteria;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Company\Repository\CompanyRepositoryInterface;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Transformer\Transformer;
+use Phalcon\Contracts\ADR\Payload\Payload as PayloadContract;
 
 final readonly class CompanyGetManyHandler implements HandlerInterface
 {
@@ -38,9 +39,9 @@ final readonly class CompanyGetManyHandler implements HandlerInterface
      *
      * @param CommandInterface $command
      *
-     * @return Payload
+     * @return PayloadContract
      */
-    public function __invoke(CommandInterface $command): Payload
+    public function __invoke(CommandInterface $command): PayloadContract
     {
         $criteria = CompanyCriteria::fromDto($command);
 

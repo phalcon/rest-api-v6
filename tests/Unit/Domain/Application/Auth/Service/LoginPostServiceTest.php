@@ -14,11 +14,11 @@ declare(strict_types=1);
 namespace Phalcon\Api\Tests\Unit\Domain\Application\Auth\Service;
 
 use Faker\Factory;
+use Phalcon\ADR\Payload\Status;
 use Phalcon\Api\Domain\Application\Auth\Service\AuthLoginPostService;
 use Phalcon\Api\Domain\Infrastructure\Enums\Http\HttpCodesEnum;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
 use Phalcon\Api\Tests\Fixtures\Domain\Migrations\UsersMigration;
-use Phalcon\Domain\Payload\Status;
 use PHPUnit\Framework\Attributes\BackupGlobals;
 
 #[BackupGlobals(true)]
@@ -31,15 +31,14 @@ final class LoginPostServiceTest extends AbstractUnitTestCase
 
         $payload = $service->__invoke([]);
 
-        $expected = Status::NOT_AUTHORIZED;
+        $expected = Status::NOT_AUTHENTICATED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('errors', $actual);
+        $actual = $payload->getMessages();
 
         $expected = HttpCodesEnum::AppIncorrectCredentials->error();
-        $actual   = $actual['errors'][0];
+        $actual   = $actual[0];
         $this->assertSame($expected, $actual);
     }
 
@@ -67,10 +66,7 @@ final class LoginPostServiceTest extends AbstractUnitTestCase
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('data', $actual);
-
-        $data = $actual['data'];
+        $data = $payload->getResult();
 
         $this->assertArrayHasKey('authenticated', $data);
         $this->assertArrayHasKey('user', $data);
@@ -125,15 +121,14 @@ final class LoginPostServiceTest extends AbstractUnitTestCase
 
         $payload = $service->__invoke($payload);
 
-        $expected = Status::NOT_AUTHORIZED;
+        $expected = Status::NOT_AUTHENTICATED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('errors', $actual);
+        $actual = $payload->getMessages();
 
         $expected = HttpCodesEnum::AppIncorrectCredentials->error();
-        $actual   = $actual['errors'][0];
+        $actual   = $actual[0];
         $this->assertSame($expected, $actual);
     }
 
@@ -157,15 +152,14 @@ final class LoginPostServiceTest extends AbstractUnitTestCase
 
         $payload = $service->__invoke($payload);
 
-        $expected = Status::NOT_AUTHORIZED;
+        $expected = Status::NOT_AUTHENTICATED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('errors', $actual);
+        $actual = $payload->getMessages();
 
         $expected = HttpCodesEnum::AppIncorrectCredentials->error();
-        $actual   = $actual['errors'][0];
+        $actual   = $actual[0];
         $this->assertSame($expected, $actual);
     }
 }

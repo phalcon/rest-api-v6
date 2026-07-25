@@ -15,12 +15,12 @@ namespace Phalcon\Api\Tests\Unit\Domain\Application\User\Handler;
 
 use DateTimeImmutable;
 use PDOException;
+use Phalcon\ADR\Payload\Status;
 use Phalcon\Api\Domain\Application\User\Command\UserCommandFactory;
 use Phalcon\Api\Domain\Application\User\Handler\UserPostHandler;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Mapper\UserMapper;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Repository\UserRepository;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
-use Phalcon\Domain\Payload\Status;
 use Phalcon\Support\Registry;
 
 use function strip_tags;
@@ -75,10 +75,7 @@ final class UserHandlerPostTest extends AbstractUnitTestCase
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('errors', $actual);
-
-        $errors = $actual['errors'];
+        $errors = $payload->getMessages();
 
         $expected = [['Cannot create database record: No id returned']];
         $actual   = $errors;
@@ -135,10 +132,7 @@ final class UserHandlerPostTest extends AbstractUnitTestCase
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('errors', $actual);
-
-        $errors = $actual['errors'];
+        $errors = $payload->getMessages();
 
         $expected = [['Cannot create database record: ' . $message]];
         $actual   = $errors;
@@ -176,10 +170,7 @@ final class UserHandlerPostTest extends AbstractUnitTestCase
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('errors', $actual);
-
-        $errors = $actual['errors'];
+        $errors = $payload->getMessages();
 
         $expected = [
             ['Field email is required'],
@@ -224,10 +215,7 @@ final class UserHandlerPostTest extends AbstractUnitTestCase
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('data', $actual);
-
-        $data = $actual['data'];
+        $data = $payload->getResult();
 
         $userId = array_key_first($data);
 
@@ -336,10 +324,7 @@ final class UserHandlerPostTest extends AbstractUnitTestCase
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('data', $actual);
-
-        $data = $actual['data'];
+        $data = $payload->getResult();
 
         $userId = array_key_first($data);
 

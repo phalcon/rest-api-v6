@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Domain\ADR;
 
+use Phalcon\Contracts\ADR\Payload\Payload as PayloadContract;
+
 /**
  * @phpstan-import-type TAuthLoginInput from InputTypes
  * @phpstan-import-type TUserInput from InputTypes
@@ -22,7 +24,7 @@ interface DomainInterface
     /**
      * @param TAuthLoginInput|TUserInput $input
      *
-     * @return Payload
+     * @return PayloadContract
      */
-    public function __invoke(array $input): Payload;
+    public function __invoke(array $input): PayloadContract;
 }

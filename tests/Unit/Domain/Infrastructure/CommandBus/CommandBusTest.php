@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Tests\Unit\Domain\Infrastructure\CommandBus;
 
-use Phalcon\Api\Domain\ADR\Payload;
+use Phalcon\ADR\Payload\Payload;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\CommandBus;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
 use Phalcon\Api\Tests\Fixtures\Domain\Application\Command\CommandFixture;
@@ -41,9 +41,7 @@ final class CommandBusTest extends AbstractUnitTestCase
         $this->assertInstanceOf($expected, $actual);
 
         $expected = [
-            'data' => [
-                "Name: $name",
-            ],
+            "Name: $name",
         ];
         $actual   = $result->getResult();
         $this->assertSame($expected, $actual);

@@ -13,13 +13,13 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Responder;
 
-use Phalcon\Api\Domain\ADR\Payload;
+use Phalcon\Contracts\ADR\Payload\Payload as PayloadContract;
 use Phalcon\Http\ResponseInterface;
 
 interface ResponderInterface
 {
     public function __invoke(
         ResponseInterface $response,
-        Payload $payload
+        PayloadContract $payload
     ): ResponseInterface;
 }

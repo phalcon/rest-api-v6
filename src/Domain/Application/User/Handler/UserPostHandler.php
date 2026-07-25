@@ -14,12 +14,13 @@ declare(strict_types=1);
 namespace Phalcon\Api\Domain\Application\User\Handler;
 
 use PDOException;
-use Phalcon\Api\Domain\ADR\Payload;
+use Phalcon\ADR\Payload\Payload;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\CommandInterface;
 use Phalcon\Api\Domain\Infrastructure\Constants\Dates;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\DTO\User;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\UserTypes;
 use Phalcon\Api\Domain\Infrastructure\Enums\Http\HttpCodesEnum;
+use Phalcon\Contracts\ADR\Payload\Payload as PayloadContract;
 
 /**
  * @phpstan-import-type TUserDomainToDbRecord from UserTypes
@@ -32,9 +33,9 @@ final class UserPostHandler extends AbstractUserPutPostHandler
      *
      * @param CommandInterface $command
      *
-     * @return Payload
+     * @return PayloadContract
      */
-    public function __invoke(CommandInterface $command): Payload
+    public function __invoke(CommandInterface $command): PayloadContract
     {
         $validation = $this->validator->validate($command);
         if (!$validation->isValid()) {

@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Domain\Application\Auth\Handler;
 
+use Phalcon\ADR\Payload\Payload;
 use Phalcon\Api\Domain\ADR\InputTypes;
-use Phalcon\Api\Domain\ADR\Payload;
 use Phalcon\Api\Domain\Application\Auth\Command\AuthLoginPostCommand;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\CommandInterface;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\HandlerInterface;
@@ -24,6 +24,7 @@ use Phalcon\Api\Domain\Infrastructure\DataSource\Validation\ValidatorInterface;
 use Phalcon\Api\Domain\Infrastructure\Encryption\Security;
 use Phalcon\Api\Domain\Infrastructure\Encryption\TokenManagerInterface;
 use Phalcon\Api\Domain\Infrastructure\Enums\Http\HttpCodesEnum;
+use Phalcon\Contracts\ADR\Payload\Payload as PayloadContract;
 
 /**
  * @phpstan-import-type TAuthLoginInput from InputTypes
@@ -51,9 +52,9 @@ final readonly class AuthLoginPostHandler implements HandlerInterface
      *
      * @param CommandInterface $command
      *
-     * @return Payload
+     * @return PayloadContract
      */
-    public function __invoke(CommandInterface $command): Payload
+    public function __invoke(CommandInterface $command): PayloadContract
     {
         /**
          * Validate
@@ -61,7 +62,7 @@ final readonly class AuthLoginPostHandler implements HandlerInterface
         /** @var AuthLoginPostCommand $command */
         $validation = $this->validator->validate($command);
         if (!$validation->isValid()) {
-            return Payload::unauthorized($validation->getErrors());
+            return Payload::unauthenticated($validation->getErrors());
         }
 
         /**
@@ -71,7 +72,7 @@ final readonly class AuthLoginPostHandler implements HandlerInterface
         $email      = $command->email;
         $domainUser = $this->repository->findByEmail($email);
         if (null === $domainUser) {
-            return Payload::unauthorized([HttpCodesEnum::AppIncorrectCredentials->error()]);
+            return Payload::unauthenticated([HttpCodesEnum::AppIncorrectCredentials->error()]);
         }
 
         /**
@@ -82,7 +83,7 @@ final readonly class AuthLoginPostHandler implements HandlerInterface
         /** @var string $dbPassword */
         $dbPassword = $domainUser->password;
         if (true !== $this->security->verify($suppliedPassword, $dbPassword)) {
-            return Payload::unauthorized([HttpCodesEnum::AppIncorrectCredentials->error()]);
+            return Payload::unauthenticated([HttpCodesEnum::AppIncorrectCredentials->error()]);
         }
 
         /**

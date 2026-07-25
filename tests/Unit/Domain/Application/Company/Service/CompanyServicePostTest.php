@@ -15,6 +15,7 @@ namespace Phalcon\Api\Tests\Unit\Domain\Application\Company\Service;
 
 use DateTimeImmutable;
 use PDOException;
+use Phalcon\ADR\Payload\Status;
 use Phalcon\Api\Domain\Application\Company\Service\CompanyPostService;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Company\Mapper\CompanyMapper;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Company\Mapper\CompanyMapperInterface;
@@ -22,7 +23,6 @@ use Phalcon\Api\Domain\Infrastructure\DataSource\Company\Repository\CompanyRepos
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Mapper\UserMapper;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Mapper\UserMapperInterface;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
-use Phalcon\Domain\Payload\Status;
 use Phalcon\Support\Registry;
 
 use function array_key_first;
@@ -79,10 +79,7 @@ final class CompanyServicePostTest extends AbstractUnitTestCase
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('errors', $actual);
-
-        $errors = $actual['errors'];
+        $errors = $payload->getMessages();
 
         $expected = [['Cannot create database record: No id returned']];
         $actual   = $errors;
@@ -142,10 +139,7 @@ final class CompanyServicePostTest extends AbstractUnitTestCase
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('errors', $actual);
-
-        $errors = $actual['errors'];
+        $errors = $payload->getMessages();
 
         $expected = [['Cannot create database record: ' . $message]];
         $actual   = $errors;
@@ -178,10 +172,7 @@ final class CompanyServicePostTest extends AbstractUnitTestCase
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('errors', $actual);
-
-        $errors = $actual['errors'];
+        $errors = $payload->getMessages();
 
         $expected = [
             ['Field email is required'],
@@ -228,10 +219,7 @@ final class CompanyServicePostTest extends AbstractUnitTestCase
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('data', $actual);
-
-        $data = $actual['data'];
+        $data = $payload->getResult();
 
         $companyId = array_key_first($data);
 
@@ -341,10 +329,7 @@ final class CompanyServicePostTest extends AbstractUnitTestCase
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('data', $actual);
-
-        $data = $actual['data'];
+        $data = $payload->getResult();
 
         $companyId = array_key_first($data);
 

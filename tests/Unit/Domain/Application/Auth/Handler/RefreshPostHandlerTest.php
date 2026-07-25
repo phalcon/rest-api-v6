@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Tests\Unit\Domain\Application\Auth\Handler;
 
+use Phalcon\ADR\Payload\Status;
 use Phalcon\Api\Domain\Application\Auth\Command\AuthCommandFactory;
 use Phalcon\Api\Domain\Application\Auth\Handler\AuthLoginPostHandler;
 use Phalcon\Api\Domain\Application\Auth\Handler\AuthRefreshPostHandler;
@@ -21,7 +22,6 @@ use Phalcon\Api\Domain\Infrastructure\Encryption\JWTToken;
 use Phalcon\Api\Domain\Infrastructure\Enums\Http\HttpCodesEnum;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
 use Phalcon\Api\Tests\Fixtures\Domain\Migrations\UsersMigration;
-use Phalcon\Domain\Payload\Status;
 use Phalcon\Encryption\Security\JWT\Token\Item;
 use Phalcon\Encryption\Security\JWT\Token\Token;
 
@@ -37,15 +37,14 @@ final class RefreshPostHandlerTest extends AbstractUnitTestCase
         $command = $factory->refresh([]);
         $payload = $handler->__invoke($command);
 
-        $expected = Status::NOT_AUTHORIZED;
+        $expected = Status::NOT_AUTHENTICATED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('errors', $actual);
+        $actual = $payload->getMessages();
 
         $expected = HttpCodesEnum::AppTokenNotPresent->error();
-        $actual   = $actual['errors'][0];
+        $actual   = $actual[0];
         $this->assertSame($expected, $actual);
     }
 
@@ -117,15 +116,14 @@ final class RefreshPostHandlerTest extends AbstractUnitTestCase
         $command = $factory->refresh(['token' => '1234']);
         $payload = $handler->__invoke($command);
 
-        $expected = Status::NOT_AUTHORIZED;
+        $expected = Status::NOT_AUTHENTICATED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('errors', $actual);
+        $actual = $payload->getMessages();
 
         $expected = ['Incorrect token data'];
-        $actual   = $actual['errors'][0];
+        $actual   = $actual[0];
         $this->assertSame($expected, $actual);
     }
 
@@ -183,15 +181,14 @@ final class RefreshPostHandlerTest extends AbstractUnitTestCase
         $command = $factory->refresh(['token' => '1234']);
         $payload = $handler->__invoke($command);
 
-        $expected = Status::NOT_AUTHORIZED;
+        $expected = Status::NOT_AUTHENTICATED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('errors', $actual);
+        $actual = $payload->getMessages();
 
         $expected = HttpCodesEnum::AppTokenNotValid->error();
-        $actual   = $actual['errors'][0];
+        $actual   = $actual[0];
         $this->assertSame($expected, $actual);
     }
 
@@ -226,7 +223,7 @@ final class RefreshPostHandlerTest extends AbstractUnitTestCase
         $this->assertSame($expected, $actual);
 
         $result = $payload->getResult();
-        $jwt    = $result['data']['jwt'];
+        $jwt    = $result['jwt'];
 
         $command = $factory->refresh(['token' => $jwt['refreshToken']]);
         $payload = $handler->__invoke($command);
@@ -235,10 +232,7 @@ final class RefreshPostHandlerTest extends AbstractUnitTestCase
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('data', $actual);
-
-        $data = $actual['data'];
+        $data = $payload->getResult();
 
         $this->assertArrayHasKey('token', $data);
         $this->assertArrayHasKey('refreshToken', $data);
@@ -306,15 +300,14 @@ final class RefreshPostHandlerTest extends AbstractUnitTestCase
         $command = $factory->refresh(['token' => '1234']);
         $payload = $handler->__invoke($command);
 
-        $expected = Status::NOT_AUTHORIZED;
+        $expected = Status::NOT_AUTHENTICATED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('errors', $actual);
+        $actual = $payload->getMessages();
 
         $expected = HttpCodesEnum::AppTokenInvalidUser->error();
-        $actual   = $actual['errors'][0];
+        $actual   = $actual[0];
         $this->assertSame($expected, $actual);
     }
 }

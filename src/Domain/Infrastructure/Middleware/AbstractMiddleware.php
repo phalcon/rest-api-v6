@@ -13,8 +13,9 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Domain\Infrastructure\Middleware;
 
-use Phalcon\Api\Domain\ADR\Payload;
+use Phalcon\ADR\Payload\Payload;
 use Phalcon\Api\Domain\Infrastructure\Container;
+use Phalcon\Api\Domain\Infrastructure\Enums\Http\HttpCodesEnum;
 use Phalcon\Api\Domain\Infrastructure\Env\EnvManager;
 use Phalcon\Api\Responder\JsonResponder;
 use Phalcon\Api\Responder\ResponderInterface;
@@ -89,14 +90,17 @@ abstract class AbstractMiddleware implements MiddlewareInterface
 
         $application->stop();
 
-        $results = [
-            'code'    => $code,
-            'message' => $message,
-            'data'    => $data,
-            'errors'  => $errors,
-        ];
-
-        $payload = Payload::success($results);
+        /**
+         * The native payload separates data from errors and derives the HTTP
+         * code from its status, so the code handed in here selects a factory
+         * rather than being written into the body.
+         */
+        $payload = match (true) {
+            HttpCodesEnum::Unauthorized->value === $code => Payload::unauthenticated($errors),
+            HttpCodesEnum::NotFound->value === $code     => Payload::notFound($errors),
+            true !== empty($errors)                      => Payload::error($errors),
+            default                                      => Payload::success($data),
+        };
 
         $responder->__invoke($response, $payload);
     }

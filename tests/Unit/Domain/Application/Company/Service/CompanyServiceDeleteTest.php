@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Tests\Unit\Domain\Application\Company\Service;
 
+use Phalcon\ADR\Payload\Status;
 use Phalcon\Api\Domain\Application\Company\Service\CompanyDeleteService;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
 use Phalcon\Api\Tests\Fixtures\Domain\Migrations\CompaniesMigration;
-use Phalcon\Domain\Payload\Status;
 
 final class CompanyServiceDeleteTest extends AbstractUnitTestCase
 {
@@ -44,10 +44,7 @@ final class CompanyServiceDeleteTest extends AbstractUnitTestCase
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('data', $actual);
-
-        $data = $actual['data'];
+        $data = $payload->getResult();
 
         $expected = [
             'Record deleted successfully [#' . $companyId . '].',
@@ -68,10 +65,7 @@ final class CompanyServiceDeleteTest extends AbstractUnitTestCase
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('errors', $actual);
-
-        $errors = $actual['errors'];
+        $errors = $payload->getMessages();
 
         $expected = [['Record(s) not found']];
         $actual   = $errors;
@@ -93,10 +87,7 @@ final class CompanyServiceDeleteTest extends AbstractUnitTestCase
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('errors', $actual);
-
-        $errors = $actual['errors'];
+        $errors = $payload->getMessages();
 
         $expected = [['Record(s) not found']];
         $actual   = $errors;

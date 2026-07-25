@@ -13,12 +13,13 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Tests\Fixtures\Domain\Application\Service;
 
+use Phalcon\ADR\Payload\Payload;
 use Phalcon\Api\Domain\ADR\DomainInterface;
-use Phalcon\Api\Domain\ADR\Payload;
+use Phalcon\Contracts\ADR\Payload\Payload as PayloadContract;
 
 final readonly class ServiceFixture implements DomainInterface
 {
-    public function __invoke(array $input): Payload
+    public function __invoke(array $input): PayloadContract
     {
         return Payload::success($input);
     }

@@ -13,135 +13,80 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Tests\Unit\Domain\ADR;
 
-use Phalcon\Api\Domain\ADR\Payload;
-use Phalcon\Api\Domain\Infrastructure\Enums\Http\HttpCodesEnum;
+use Phalcon\ADR\Payload\Payload;
+use Phalcon\ADR\Payload\Status;
+use Phalcon\Api\Responder\ApiStatusMapper;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
-use Phalcon\Domain\Payload\Status;
 
+/**
+ * The application used to ship its own Payload, because the payload Phalcon
+ * offered at the time had a single result slot and could not separate data
+ * from errors. The native ADR payload has both, so that class is gone.
+ *
+ * These tests pin the semantics the rest of the application now relies on:
+ * data arrives through getResult(), errors through getMessages(), and each
+ * factory carries the status the responder maps to an HTTP code.
+ */
 final class PayloadTest extends AbstractUnitTestCase
 {
-    public function testCreated(): void
+    public function testDataCarryingFactories(): void
     {
-        $data    = ['id' => 1];
-        $payload = Payload::created($data);
-
-        $expected = Payload::class;
-        $actual   = get_class($payload);
-        $this->assertSame($expected, $actual);
-
-        $expected = Status::CREATED;
-        $actual   = $payload->getStatus();
-        $this->assertSame($expected, $actual);
-
-        $expected = ['data' => $data];
-        $actual   = $payload->getResult();
-        $this->assertSame($expected, $actual);
-    }
-
-    public function testDeleted(): void
-    {
-        $data    = ['deleted' => true];
-        $payload = Payload::deleted($data);
-
-        $expected = Status::DELETED;
-        $actual   = $payload->getStatus();
-        $this->assertSame($expected, $actual);
-
-        $expected = ['data' => $data];
-        $actual   = $payload->getResult();
-        $this->assertSame($expected, $actual);
-    }
-
-    public function testError(): void
-    {
-        $errors  = [['something' => 'went wrong']];
-        $payload = Payload::error($errors);
-
-        $expected = Status::ERROR;
-        $actual   = $payload->getStatus();
-        $this->assertSame($expected, $actual);
-
-        $expected = ['errors' => $errors];
-        $actual   = $payload->getResult();
-        $this->assertSame($expected, $actual);
-    }
-
-    public function testInvalid(): void
-    {
-        $errors  = [['field' => 'invalid']];
-        $payload = Payload::invalid($errors);
-
-        $expected = Status::NOT_VALID;
-        $actual   = $payload->getStatus();
-        $this->assertSame($expected, $actual);
-
-        $expected = ['errors' => $errors];
-        $actual   = $payload->getResult();
-        $this->assertSame($expected, $actual);
-    }
-
-    public function testNotFound(): void
-    {
-        $payload = Payload::notFound();
-
-        $expected = Status::NOT_FOUND;
-        $actual   = $payload->getStatus();
-        $this->assertSame($expected, $actual);
+        $data = ['id' => 1];
 
         $expected = [
-            'code'    => HttpCodesEnum::NotFound->value,
-            'message' => HttpCodesEnum::NotFound->text(),
-            'data'    => [],
-            'errors'  => [['Record(s) not found']],
+            Status::CREATED => Payload::created($data),
+            Status::DELETED => Payload::deleted($data),
+            Status::SUCCESS => Payload::success($data),
+            Status::UPDATED => Payload::updated($data),
         ];
-        $actual   = $payload->getResult();
-        $this->assertSame($expected, $actual);
+
+        foreach ($expected as $status => $payload) {
+            $this->assertSame($status, $payload->getStatus());
+            $this->assertSame($data, $payload->getResult());
+            $this->assertNull($payload->getMessages());
+        }
     }
 
-    public function testSuccess(): void
+    public function testErrorCarryingFactories(): void
     {
-        $data    = ['items' => [1, 2, 3]];
-        $payload = Payload::success($data);
-
-        $expected = Status::SUCCESS;
-        $actual   = $payload->getStatus();
-        $this->assertSame($expected, $actual);
-
-        $expected = ['data' => $data];
-        $actual   = $payload->getResult();
-        $this->assertSame($expected, $actual);
-    }
-
-    public function testUnauthorized(): void
-    {
-        $errors  = [['reason' => 'no access']];
-        $payload = Payload::unauthorized($errors);
-
-        $expected = Status::NOT_AUTHORIZED;
-        $actual   = $payload->getStatus();
-        $this->assertSame($expected, $actual);
+        $errors = [['Field email is required']];
 
         $expected = [
-            'code'    => HttpCodesEnum::Unauthorized->value,
-            'message' => HttpCodesEnum::Unauthorized->text(),
-            'data'    => [],
-            'errors'  => $errors,
+            Status::ERROR             => Payload::error($errors),
+            Status::NOT_VALID         => Payload::invalid($errors),
+            Status::NOT_FOUND         => Payload::notFound($errors),
+            Status::NOT_AUTHENTICATED => Payload::unauthenticated($errors),
         ];
-        $actual   = $payload->getResult();
-        $this->assertSame($expected, $actual);
+
+        foreach ($expected as $status => $payload) {
+            $this->assertSame($status, $payload->getStatus());
+            $this->assertSame($errors, $payload->getMessages());
+            $this->assertNull($payload->getResult());
+        }
     }
 
-    public function testUpdated(): void
+    public function testTheStatusesMapToTheCodesTheApiPromises(): void
     {
-        $data    = ['updated' => true];
-        $payload = Payload::updated($data);
+        $mapper = ApiStatusMapper::create();
 
-        $expected = Status::UPDATED;
-        $actual   = $payload->getStatus();
-        $this->assertSame($expected, $actual);
+        $expected = [
+            200 => Payload::success([]),
+            401 => Payload::unauthenticated([]),
+            404 => Payload::notFound([]),
+        ];
 
-        $expected = ['data' => $data];
-        $actual   = $payload->getResult();
-        $this->assertSame($expected, $actual);
+        foreach ($expected as $code => $payload) {
+            $this->assertSame($code, $mapper->toHttpCode((string) $payload->getStatus()));
+        }
+    }
+
+    public function testWithersReturnNewInstances(): void
+    {
+        $payload = Payload::success(['id' => 1]);
+        $changed = $payload->withStatus(Status::UPDATED);
+
+        $this->assertNotSame($payload, $changed);
+        $this->assertSame(Status::SUCCESS, $payload->getStatus());
+        $this->assertSame(Status::UPDATED, $changed->getStatus());
     }
 }

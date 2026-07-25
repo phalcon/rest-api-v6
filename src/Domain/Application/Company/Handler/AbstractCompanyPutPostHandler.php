@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Domain\Application\Company\Handler;
 
-use Phalcon\Api\Domain\ADR\Payload;
+use Phalcon\ADR\Payload\Payload;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\HandlerInterface;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Company\CompanyTypes;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Company\DTO\Company;
@@ -22,6 +22,7 @@ use Phalcon\Api\Domain\Infrastructure\DataSource\Company\Repository\CompanyRepos
 use Phalcon\Api\Domain\Infrastructure\DataSource\Transformer\Transformer;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Validation\ValidatorInterface;
 use Phalcon\Api\Domain\Infrastructure\Enums\Http\HttpCodesEnum;
+use Phalcon\Contracts\ADR\Payload\Payload as PayloadContract;
 use Phalcon\Events\ManagerInterface as EventsManagerInterface;
 use Phalcon\Support\Registry;
 
@@ -70,12 +71,12 @@ abstract class AbstractCompanyPutPostHandler implements HandlerInterface
      * @param HttpCodesEnum $item
      * @param string        $message
      *
-     * @return Payload
+     * @return PayloadContract
      */
     protected function getErrorPayload(
         HttpCodesEnum $item,
         string $message
-    ): Payload {
+    ): PayloadContract {
         return Payload::error([[$item->text() . $message]]);
     }
 }

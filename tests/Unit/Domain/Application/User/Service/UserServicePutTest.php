@@ -15,12 +15,12 @@ namespace Phalcon\Api\Tests\Unit\Domain\Application\User\Service;
 
 use DateTimeImmutable;
 use PDOException;
+use Phalcon\ADR\Payload\Status;
 use Phalcon\Api\Domain\Application\User\Service\UserPutService;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Mapper\UserMapper;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Repository\UserRepository;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
 use Phalcon\Api\Tests\Fixtures\Domain\Migrations\UsersMigration;
-use Phalcon\Domain\Payload\Status;
 use Phalcon\Support\Registry;
 
 use function date;
@@ -82,10 +82,7 @@ final class UserServicePutTest extends AbstractUnitTestCase
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('errors', $actual);
-
-        $errors = $actual['errors'];
+        $errors = $payload->getMessages();
 
         $expected = [['Cannot update database record: No id returned']];
         $actual   = $errors;
@@ -148,10 +145,7 @@ final class UserServicePutTest extends AbstractUnitTestCase
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('errors', $actual);
-
-        $errors = $actual['errors'];
+        $errors = $payload->getMessages();
 
         $expected = [['Cannot update database record: ' . $message]];
         $actual   = $errors;
@@ -206,10 +200,7 @@ final class UserServicePutTest extends AbstractUnitTestCase
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('errors', $actual);
-
-        $errors = $actual['errors'];
+        $errors = $payload->getMessages();
 
         $expected = [['Record(s) not found']];
         $actual   = $errors;
@@ -247,10 +238,7 @@ final class UserServicePutTest extends AbstractUnitTestCase
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('errors', $actual);
-
-        $errors = $actual['errors'];
+        $errors = $payload->getMessages();
 
         $expected = [
             ['Field email must be an email address'],
@@ -299,10 +287,7 @@ final class UserServicePutTest extends AbstractUnitTestCase
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('data', $actual);
-
-        $data = $actual['data'];
+        $data = $payload->getResult();
 
         $this->assertArrayHasKey($userId, $data);
 
@@ -422,10 +407,7 @@ final class UserServicePutTest extends AbstractUnitTestCase
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('data', $actual);
-
-        $data = $actual['data'];
+        $data = $payload->getResult();
 
         $this->assertArrayHasKey($userId, $data);
 

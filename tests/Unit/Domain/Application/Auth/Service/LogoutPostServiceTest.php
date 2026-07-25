@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Tests\Unit\Domain\Application\Auth\Service;
 
+use Phalcon\ADR\Payload\Status;
 use Phalcon\Api\Domain\Application\Auth\Service\AuthLoginPostService;
 use Phalcon\Api\Domain\Application\Auth\Service\AuthLogoutPostService;
 use Phalcon\Api\Domain\Infrastructure\Constants\Cache as CacheConstants;
@@ -22,7 +23,6 @@ use Phalcon\Api\Domain\Infrastructure\Enums\Http\HttpCodesEnum;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
 use Phalcon\Api\Tests\Fixtures\Domain\Migrations\UsersMigration;
 use Phalcon\Cache\Cache;
-use Phalcon\Domain\Payload\Status;
 use Phalcon\Encryption\Security\JWT\Token\Item;
 use Phalcon\Encryption\Security\JWT\Token\Token;
 use PHPUnit\Framework\Attributes\BackupGlobals;
@@ -37,15 +37,14 @@ final class LogoutPostServiceTest extends AbstractUnitTestCase
 
         $payload = $service->__invoke([]);
 
-        $expected = Status::NOT_AUTHORIZED;
+        $expected = Status::NOT_AUTHENTICATED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('errors', $actual);
+        $actual = $payload->getMessages();
 
         $expected = HttpCodesEnum::AppTokenNotPresent->error();
-        $actual   = $actual['errors'][0];
+        $actual   = $actual[0];
         $this->assertSame($expected, $actual);
     }
 
@@ -114,15 +113,14 @@ final class LogoutPostServiceTest extends AbstractUnitTestCase
 
         $payload = $service->__invoke(['token' => '1234']);
 
-        $expected = Status::NOT_AUTHORIZED;
+        $expected = Status::NOT_AUTHENTICATED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('errors', $actual);
+        $actual = $payload->getMessages();
 
         $expected = ['Incorrect token data'];
-        $actual   = $actual['errors'][0];
+        $actual   = $actual[0];
         $this->assertSame($expected, $actual);
     }
 
@@ -179,14 +177,11 @@ final class LogoutPostServiceTest extends AbstractUnitTestCase
          */
         $payload = $logoutService->__invoke(['token' => '1234']);
 
-        $expected = Status::NOT_AUTHORIZED;
+        $expected = Status::NOT_AUTHENTICATED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('errors', $actual);
-
-        $errors = $actual['errors'];
+        $errors = $payload->getMessages();
 
         $expected = [HttpCodesEnum::AppTokenNotValid->error()];
         $actual   = $errors;
@@ -223,10 +218,7 @@ final class LogoutPostServiceTest extends AbstractUnitTestCase
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('data', $actual);
-
-        $data = $actual['data'];
+        $data = $payload->getResult();
 
         $this->assertArrayHasKey('authenticated', $data);
 
@@ -262,11 +254,7 @@ final class LogoutPostServiceTest extends AbstractUnitTestCase
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-
-        $this->assertArrayHasKey('data', $actual);
-
-        $data = $actual['data'];
+        $data = $payload->getResult();
 
         $this->assertArrayHasKey('authenticated', $data);
 
@@ -340,14 +328,11 @@ final class LogoutPostServiceTest extends AbstractUnitTestCase
          */
         $payload = $logoutService->__invoke(['token' => '1234']);
 
-        $expected = Status::NOT_AUTHORIZED;
+        $expected = Status::NOT_AUTHENTICATED;
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('errors', $actual);
-
-        $errors = $actual['errors'];
+        $errors = $payload->getMessages();
 
         $expected = [HttpCodesEnum::AppTokenInvalidUser->error()];
         $actual   = $errors;

@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace Phalcon\Api\Domain\Application\User\Facade;
 
 use Phalcon\Api\Domain\ADR\InputTypes;
-use Phalcon\Api\Domain\ADR\Payload;
 use Phalcon\Api\Domain\Application\User\Command\UserCommandFactoryInterface;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\CommandBusInterface;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\UserTypes;
+use Phalcon\Contracts\ADR\Payload\Payload as PayloadContract;
 
 /**
  * Orchestration for workflow
@@ -49,9 +49,9 @@ final readonly class UserFacade
      *
      * @param TUserInput $input
      *
-     * @return Payload
+     * @return PayloadContract
      */
-    public function delete(array $input): Payload
+    public function delete(array $input): PayloadContract
     {
         return $this->bus->dispatch($this->factory->delete($input));
     }
@@ -61,9 +61,9 @@ final readonly class UserFacade
      *
      * @param TUserInput $input
      *
-     * @return Payload
+     * @return PayloadContract
      */
-    public function get(array $input): Payload
+    public function get(array $input): PayloadContract
     {
         return $this->bus->dispatch($this->factory->get($input));
     }
@@ -73,9 +73,9 @@ final readonly class UserFacade
      *
      * @param TUserInput $input
      *
-     * @return Payload
+     * @return PayloadContract
      */
-    public function insert(array $input): Payload
+    public function insert(array $input): PayloadContract
     {
         return $this->bus->dispatch($this->factory->insert($input));
     }
@@ -85,9 +85,9 @@ final readonly class UserFacade
      *
      * @param TUserInput $input
      *
-     * @return Payload
+     * @return PayloadContract
      */
-    public function update(array $input): Payload
+    public function update(array $input): PayloadContract
     {
         return $this->bus->dispatch($this->factory->update($input));
     }

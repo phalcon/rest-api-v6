@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Tests\Unit\Domain\Application\Company\Handler;
 
+use Phalcon\ADR\Payload\Status;
 use Phalcon\Api\Domain\Application\Company\Command\CompanyCommandFactory;
 use Phalcon\Api\Domain\Application\Company\Handler\CompanyGetHandler;
 use Phalcon\Api\Tests\AbstractUnitTestCase;
 use Phalcon\Api\Tests\Fixtures\Domain\Migrations\CompaniesMigration;
-use Phalcon\Domain\Payload\Status;
 
 use function array_key_first;
 
@@ -37,10 +37,7 @@ final class CompanyHandlerGetTest extends AbstractUnitTestCase
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('errors', $actual);
-
-        $errors = $actual['errors'];
+        $errors = $payload->getMessages();
 
         $expected = [['Record(s) not found']];
         $actual   = $errors;
@@ -66,10 +63,7 @@ final class CompanyHandlerGetTest extends AbstractUnitTestCase
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('data', $actual);
-
-        $company = $actual['data'];
+        $company = $payload->getResult();
         $key     = array_key_first($company);
         $company = $company[$key];
 
@@ -148,10 +142,7 @@ final class CompanyHandlerGetTest extends AbstractUnitTestCase
         $actual   = $payload->getStatus();
         $this->assertSame($expected, $actual);
 
-        $actual = $payload->getResult();
-        $this->assertArrayHasKey('errors', $actual);
-
-        $errors = $actual['errors'];
+        $errors = $payload->getMessages();
 
         $expected = [['Record(s) not found']];
         $actual   = $errors;

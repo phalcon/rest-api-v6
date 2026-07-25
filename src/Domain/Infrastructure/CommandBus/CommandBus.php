@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Domain\Infrastructure\CommandBus;
 
-use Phalcon\Api\Domain\ADR\Payload;
+use Phalcon\Contracts\ADR\Payload\Payload as PayloadContract;
 
 final readonly class CommandBus implements CommandBusInterface
 {
@@ -28,9 +28,9 @@ final readonly class CommandBus implements CommandBusInterface
     /**
      * @param CommandInterface $command
      *
-     * @return Payload
+     * @return PayloadContract
      */
-    public function dispatch(CommandInterface $command): Payload
+    public function dispatch(CommandInterface $command): PayloadContract
     {
         $handler = $this->locator->resolve($command);
 

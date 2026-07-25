@@ -14,13 +14,14 @@ declare(strict_types=1);
 namespace Phalcon\Api\Domain\Application\Company\Handler;
 
 use PDOException;
-use Phalcon\Api\Domain\ADR\Payload;
+use Phalcon\ADR\Payload\Payload;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\CommandInterface;
 use Phalcon\Api\Domain\Infrastructure\Constants\Dates;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Company\CompanyTypes;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Company\DTO\Company;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\DTO\User;
 use Phalcon\Api\Domain\Infrastructure\Enums\Http\HttpCodesEnum;
+use Phalcon\Contracts\ADR\Payload\Payload as PayloadContract;
 
 /**
  * @phpstan-import-type TCompanyDomainToDbRecord from CompanyTypes
@@ -33,9 +34,9 @@ final class CompanyPostHandler extends AbstractCompanyPutPostHandler
      *
      * @param CommandInterface $command
      *
-     * @return Payload
+     * @return PayloadContract
      */
-    public function __invoke(CommandInterface $command): Payload
+    public function __invoke(CommandInterface $command): PayloadContract
     {
         $validation = $this->validator->validate($command);
         if (!$validation->isValid()) {

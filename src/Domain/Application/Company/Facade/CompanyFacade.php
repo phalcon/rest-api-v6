@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace Phalcon\Api\Domain\Application\Company\Facade;
 
 use Phalcon\Api\Domain\ADR\InputTypes;
-use Phalcon\Api\Domain\ADR\Payload;
 use Phalcon\Api\Domain\Application\Company\Command\CompanyCommandFactoryInterface;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\CommandBusInterface;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Company\CompanyTypes;
+use Phalcon\Contracts\ADR\Payload\Payload as PayloadContract;
 
 /**
  * Orchestration for workflow
@@ -49,9 +49,9 @@ final readonly class CompanyFacade
      *
      * @param TCompanyInput $input
      *
-     * @return Payload
+     * @return PayloadContract
      */
-    public function delete(array $input): Payload
+    public function delete(array $input): PayloadContract
     {
         return $this->bus->dispatch($this->factory->delete($input));
     }
@@ -61,9 +61,9 @@ final readonly class CompanyFacade
      *
      * @param TCompanyInput $input
      *
-     * @return Payload
+     * @return PayloadContract
      */
-    public function get(array $input): Payload
+    public function get(array $input): PayloadContract
     {
         return $this->bus->dispatch($this->factory->get($input));
     }
@@ -73,9 +73,9 @@ final readonly class CompanyFacade
      *
      * @param TCompanyInput $input
      *
-     * @return Payload
+     * @return PayloadContract
      */
-    public function getMany(array $input): Payload
+    public function getMany(array $input): PayloadContract
     {
         return $this->bus->dispatch($this->factory->getMany($input));
     }
@@ -85,9 +85,9 @@ final readonly class CompanyFacade
      *
      * @param TCompanyInput $input
      *
-     * @return Payload
+     * @return PayloadContract
      */
-    public function insert(array $input): Payload
+    public function insert(array $input): PayloadContract
     {
         return $this->bus->dispatch($this->factory->insert($input));
     }
@@ -97,9 +97,9 @@ final readonly class CompanyFacade
      *
      * @param TCompanyInput $input
      *
-     * @return Payload
+     * @return PayloadContract
      */
-    public function update(array $input): Payload
+    public function update(array $input): PayloadContract
     {
         return $this->bus->dispatch($this->factory->update($input));
     }

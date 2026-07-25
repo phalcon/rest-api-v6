@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Domain\Infrastructure\CommandBus;
 
-use Phalcon\Api\Domain\ADR\Payload;
+use Phalcon\Contracts\ADR\Payload\Payload as PayloadContract;
 
 interface CommandBusInterface
 {
-    public function dispatch(CommandInterface $command): Payload;
+    public function dispatch(CommandInterface $command): PayloadContract;
 }

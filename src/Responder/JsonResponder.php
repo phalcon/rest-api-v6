@@ -14,64 +14,45 @@ declare(strict_types=1);
 namespace Phalcon\Api\Responder;
 
 use Exception as BaseException;
-use Phalcon\Api\Domain\ADR\Payload;
-use Phalcon\Api\Domain\Infrastructure\Constants\Dates;
-use Phalcon\Api\Domain\Infrastructure\Enums\Http\HttpCodesEnum;
+use Phalcon\Contracts\ADR\Payload\Payload as PayloadContract;
 use Phalcon\Http\ResponseInterface;
 
+use function is_array;
+use function json_encode;
 use function sha1;
 
 /**
- * @phpstan-import-type TData from ResponderTypes
- * @phpstan-import-type TErrors from ResponderTypes
- * @phpstan-import-type TResult from ResponderTypes
- * @phpstan-import-type TResponsePayload from ResponderTypes
+ * The responder the Micro application still uses.
+ *
+ * Since the move to the native payload, the body and the status code are
+ * built by EnvelopeJsonFormatter and ApiStatusMapper, so this class is a
+ * thin adapter between the old ResponderInterface signature and the new
+ * pieces. Phase 2B replaces it with ApiResponder and deletes it.
  */
 final class JsonResponder implements ResponderInterface
 {
     /**
      * @param ResponseInterface $response
-     * @param Payload           $payload
+     * @param PayloadContract   $payload
      *
      * @return ResponseInterface
      * @throws BaseException
      */
     public function __invoke(
         ResponseInterface $response,
-        Payload $payload
+        PayloadContract $payload
     ): ResponseInterface {
-        $result = $payload->getResult();
+        $statusMapper = ApiStatusMapper::create();
+        $formatter    = new EnvelopeJsonFormatter($statusMapper);
 
-        /**
-         * Check the code, message, data and errors
-         */
-        /** @var int $code */
-        $code = $result['code'] ?? HttpCodesEnum::OK->value;
-        /** @var string $message */
-        $message = $result['message'] ?? HttpCodesEnum::OK->text();
-        /** @var TData $data */
-        $data = $result['data'] ?? [];
-        /** @var TErrors $errors */
-        $errors        = $result['errors'] ?? [];
-        $statusMessage = true === empty($errors) ? 'success' : 'error';
-
-        $content = [
-            'data'   => $data,
-            'errors' => $errors,
-            'meta'   => [
-                'code'      => $code,
-                'hash'      => '',
-                'message'   => $statusMessage,
-                'timestamp' => '',
-            ],
-        ];
-
-        [$content, $eTag] = $this->calculateMeta($content);
+        /** @var string $status */
+        $status = $payload->getStatus();
 
         $response
-            ->setHeader('ETag', $eTag)
-            ->setStatusCode($code, $message)
-            ->setJsonContent($content)
+            ->setHeader('ETag', $this->calculateETag($payload))
+            ->setStatusCode($statusMapper->toHttpCode($status))
+            ->setContentType($formatter->contentType())
+            ->setContent($formatter->format($payload))
             ->send()
         ;
 
@@ -79,26 +60,26 @@ final class JsonResponder implements ResponderInterface
     }
 
     /**
-     * @param TResponsePayload $content
+     * Content only - data and errors. The meta block carries a timestamp
+     * that changes every request, so including it would make the tag
+     * useless for caching.
      *
-     * @return array{0: TResponsePayload, 1: string}
+     * @param PayloadContract $payload
+     *
+     * @return string
      */
-    private function calculateMeta(array $content): array
+    private function calculateETag(PayloadContract $payload): string
     {
-        $payload   = [
-            'data'   => $content['data'],
-            'errors' => $content['errors'],
-        ];
-        $encoded   = json_encode($payload);
-        $encoded   = (false === $encoded) ? '' : $encoded;
-        $timestamp = Dates::toUTC();
-        $hash      = sha1($timestamp . $encoded);
-        $eTag      = sha1($encoded);
+        $result   = $payload->getResult();
+        $messages = $payload->getMessages();
 
-        $content['meta']['timestamp'] = $timestamp;
-        $content['meta']['hash']      = $hash;
+        $encoded = json_encode(
+            [
+                'data'   => is_array($result) ? $result : [],
+                'errors' => is_array($messages) ? $messages : [],
+            ]
+        );
 
-
-        return [$content, $eTag];
+        return sha1((false === $encoded) ? '' : $encoded);
     }
 }

@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace Phalcon\Api\Domain\Application\Auth\Facade;
 
 use Phalcon\Api\Domain\ADR\InputTypes;
-use Phalcon\Api\Domain\ADR\Payload;
 use Phalcon\Api\Domain\Application\Auth\Command\AuthCommandFactoryInterface;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\CommandBusInterface;
+use Phalcon\Contracts\ADR\Payload\Payload as PayloadContract;
 
 /**
  * @phpstan-import-type TAuthLoginInput from InputTypes
@@ -40,9 +40,9 @@ final readonly class AuthFacade
      *
      * @param TAuthLoginInput $input
      *
-     * @return Payload
+     * @return PayloadContract
      */
-    public function authenticate(array $input): Payload
+    public function authenticate(array $input): PayloadContract
     {
         return $this->bus->dispatch($this->factory->authenticate($input));
     }
@@ -52,9 +52,9 @@ final readonly class AuthFacade
      *
      * @param TAuthLogoutInput $input
      *
-     * @return Payload
+     * @return PayloadContract
      */
-    public function logout(array $input): Payload
+    public function logout(array $input): PayloadContract
     {
         return $this->bus->dispatch($this->factory->logout($input));
     }
@@ -64,9 +64,9 @@ final readonly class AuthFacade
      *
      * @param TAuthLogoutInput $input
      *
-     * @return Payload
+     * @return PayloadContract
      */
-    public function refresh(array $input): Payload
+    public function refresh(array $input): PayloadContract
     {
         return $this->bus->dispatch($this->factory->refresh($input));
     }

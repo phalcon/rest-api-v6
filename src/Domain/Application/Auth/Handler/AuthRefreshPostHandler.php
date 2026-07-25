@@ -13,10 +13,11 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Domain\Application\Auth\Handler;
 
+use Phalcon\ADR\Payload\Payload;
 use Phalcon\Api\Domain\ADR\InputTypes;
-use Phalcon\Api\Domain\ADR\Payload;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\CommandInterface;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\DTO\User;
+use Phalcon\Contracts\ADR\Payload\Payload as PayloadContract;
 
 /**
  * @phpstan-import-type TAuthRefreshInput from InputTypes
@@ -28,16 +29,16 @@ final class AuthRefreshPostHandler extends AbstractAuthLogoutRefreshHandler
      *
      * @param CommandInterface $command
      *
-     * @return Payload
+     * @return PayloadContract
      */
-    public function __invoke(CommandInterface $command): Payload
+    public function __invoke(CommandInterface $command): PayloadContract
     {
         /**
          * Validate
          */
         $validation = $this->validator->validate($command);
         if (!$validation->isValid()) {
-            return Payload::unauthorized($validation->getErrors());
+            return Payload::unauthenticated($validation->getErrors());
         }
 
         /**

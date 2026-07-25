@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Domain\Infrastructure\CommandBus;
 
-use Phalcon\Api\Domain\ADR\Payload;
+use Phalcon\Contracts\ADR\Payload\Payload as PayloadContract;
 
 interface HandlerInterface
 {
-    public function __invoke(CommandInterface $command): Payload;
+    public function __invoke(CommandInterface $command): PayloadContract;
 }

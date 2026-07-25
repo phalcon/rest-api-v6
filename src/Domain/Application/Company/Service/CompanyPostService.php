@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Phalcon\Api\Domain\Application\Company\Service;
 
 use Phalcon\Api\Domain\ADR\InputTypes;
-use Phalcon\Api\Domain\ADR\Payload;
+use Phalcon\Contracts\ADR\Payload\Payload as PayloadContract;
 
 /**
  * @phpstan-import-type TCompanyInput from InputTypes
@@ -24,9 +24,9 @@ final class CompanyPostService extends AbstractCompanyService
     /**
      * @param TCompanyInput $input
      *
-     * @return Payload
+     * @return PayloadContract
      */
-    public function __invoke(array $input): Payload
+    public function __invoke(array $input): PayloadContract
     {
         return $this->facade->insert($input);
     }

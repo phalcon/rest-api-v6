@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Tests\Unit\Responder;
 
-use Phalcon\Api\Domain\ADR\Payload;
+use Phalcon\ADR\Payload\Payload;
 use Phalcon\Api\Domain\Infrastructure\Container;
 use Phalcon\Api\Domain\Infrastructure\Enums\Http\HttpCodesEnum;
 use Phalcon\Api\Responder\JsonResponder;
@@ -38,7 +38,7 @@ final class JsonResponderTest extends AbstractUnitTestCase
         $responder = $this->container->get(JsonResponder::class);
 
         $errorContent = uniqid('error-');
-        $payload      = Payload::unauthorized([[1234 => $errorContent]]);
+        $payload      = Payload::unauthenticated([[1234 => $errorContent]]);
 
         ob_start();
         $outputResponse = $responder->__invoke($response, $payload);

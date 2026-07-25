@@ -13,13 +13,14 @@ declare(strict_types=1);
 
 namespace Phalcon\Api\Domain\Application\User\Handler;
 
-use Phalcon\Api\Domain\ADR\Payload;
+use Phalcon\ADR\Payload\Payload;
 use Phalcon\Api\Domain\Application\User\Command\UserDeleteCommand;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\CommandInterface;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\HandlerInterface;
 use Phalcon\Api\Domain\Infrastructure\DataSource\Transformer\Transformer;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\DTO\User;
 use Phalcon\Api\Domain\Infrastructure\DataSource\User\Repository\UserRepositoryInterface;
+use Phalcon\Contracts\ADR\Payload\Payload as PayloadContract;
 
 final readonly class UserDeleteHandler implements HandlerInterface
 {
@@ -38,9 +39,9 @@ final readonly class UserDeleteHandler implements HandlerInterface
      *
      * @param CommandInterface $command
      *
-     * @return Payload
+     * @return PayloadContract
      */
-    public function __invoke(CommandInterface $command): Payload
+    public function __invoke(CommandInterface $command): PayloadContract
     {
         /** @var UserDeleteCommand $command */
         $userId = $command->id;
@@ -59,6 +60,6 @@ final readonly class UserDeleteHandler implements HandlerInterface
         /**
          * 404
          */
-        return Payload::notFound();
+        return Payload::notFound([['Record(s) not found']]);
     }
 }
