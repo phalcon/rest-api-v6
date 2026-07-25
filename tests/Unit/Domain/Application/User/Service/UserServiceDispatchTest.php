@@ -28,7 +28,6 @@ use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use function json_decode;
 use function ob_get_clean;
 use function ob_start;
-use function restore_error_handler;
 use function time;
 
 #[BackupGlobals(true)]
@@ -89,8 +88,6 @@ final class UserServiceDispatchTest extends AbstractUnitTestCase
         $response = ob_get_clean();
 
         $contents = json_decode($response, true);
-
-        restore_error_handler();
 
         $this->assertArrayHasKey('data', $contents);
         $this->assertArrayHasKey('errors', $contents);

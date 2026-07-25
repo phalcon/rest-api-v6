@@ -14,19 +14,44 @@ declare(strict_types=1);
 namespace Phalcon\Api\Container;
 
 use Phalcon\ADR\Container\AdrProvider;
+use Phalcon\ADR\ErrorResponder;
+use Phalcon\Api\Action\Auth\PostAuthLogin;
+use Phalcon\Api\Action\Auth\PostAuthLogout;
+use Phalcon\Api\Action\Auth\PostAuthRefresh;
+use Phalcon\Api\Action\Company\DeleteCompany;
+use Phalcon\Api\Action\Company\GetCompany;
+use Phalcon\Api\Action\Company\GetCompanyAll;
+use Phalcon\Api\Action\Company\PostCompany;
+use Phalcon\Api\Action\Company\PutCompany;
+use Phalcon\Api\Action\User\DeleteUser;
+use Phalcon\Api\Action\User\GetUser;
+use Phalcon\Api\Action\User\PostUser;
+use Phalcon\Api\Action\User\PutUser;
 use Phalcon\Api\Domain\Application\Auth\Command\AuthCommandFactory;
 use Phalcon\Api\Domain\Application\Auth\Command\AuthCommandFactoryInterface;
 use Phalcon\Api\Domain\Application\Auth\Handler\AuthLoginPostHandler;
 use Phalcon\Api\Domain\Application\Auth\Handler\AuthLogoutPostHandler;
 use Phalcon\Api\Domain\Application\Auth\Handler\AuthRefreshPostHandler;
+use Phalcon\Api\Domain\Application\Auth\Service\AuthLoginPostService;
+use Phalcon\Api\Domain\Application\Auth\Service\AuthLogoutPostService;
+use Phalcon\Api\Domain\Application\Auth\Service\AuthRefreshPostService;
 use Phalcon\Api\Domain\Application\Company\Command\CompanyCommandFactory;
 use Phalcon\Api\Domain\Application\Company\Command\CompanyCommandFactoryInterface;
 use Phalcon\Api\Domain\Application\Company\Handler\CompanyPostHandler;
 use Phalcon\Api\Domain\Application\Company\Handler\CompanyPutHandler;
+use Phalcon\Api\Domain\Application\Company\Service\CompanyDeleteService;
+use Phalcon\Api\Domain\Application\Company\Service\CompanyGetManyService;
+use Phalcon\Api\Domain\Application\Company\Service\CompanyGetService;
+use Phalcon\Api\Domain\Application\Company\Service\CompanyPostService;
+use Phalcon\Api\Domain\Application\Company\Service\CompanyPutService;
 use Phalcon\Api\Domain\Application\User\Command\UserCommandFactory;
 use Phalcon\Api\Domain\Application\User\Command\UserCommandFactoryInterface;
 use Phalcon\Api\Domain\Application\User\Handler\UserPostHandler;
 use Phalcon\Api\Domain\Application\User\Handler\UserPutHandler;
+use Phalcon\Api\Domain\Application\User\Service\UserDeleteService;
+use Phalcon\Api\Domain\Application\User\Service\UserGetService;
+use Phalcon\Api\Domain\Application\User\Service\UserPostService;
+use Phalcon\Api\Domain\Application\User\Service\UserPutService;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\CommandBus;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\CommandBusInterface;
 use Phalcon\Api\Domain\Infrastructure\CommandBus\ContainerHandlerLocator;
@@ -55,9 +80,12 @@ use Phalcon\Api\Domain\Infrastructure\Encryption\TokenManager;
 use Phalcon\Api\Domain\Infrastructure\Encryption\TokenManagerInterface;
 use Phalcon\Api\Domain\Infrastructure\Env\EnvManager;
 use Phalcon\Api\Domain\Infrastructure\Listeners\DbErrorListener;
+use Phalcon\Api\Responder\ApiErrorResponder;
+use Phalcon\Api\Responder\ApiResponder;
 use Phalcon\Cache\AdapterFactory;
 use Phalcon\Cache\Cache;
 use Phalcon\Container\Resolver\Lazy\Get as LazyGet;
+use Phalcon\Contracts\ADR\Responder\Responder as ResponderContract;
 use Phalcon\Contracts\Container\Service\Collection;
 use Phalcon\Contracts\Events\Manager as EventsManagerContract;
 use Phalcon\Contracts\Logger\Logger as LoggerContract;
@@ -102,6 +130,42 @@ class ApiProvider extends AdrProvider
         $this->registerBindings($container);
         $this->registerCommandFactories($container);
         $this->registerHandlers($container);
+        $this->registerResponders($container);
+        $this->registerActions($container);
+    }
+
+    /**
+     * Each action delegates to one domain service. DomainInterface is
+     * implemented once, by an abstract, so autowiring cannot choose - every
+     * action names its own service.
+     *
+     * @param Collection $container
+     *
+     * @return void
+     */
+    protected function registerActions(Collection $container): void
+    {
+        $pins = [
+            PostAuthLogin::class   => AuthLoginPostService::class,
+            PostAuthLogout::class  => AuthLogoutPostService::class,
+            PostAuthRefresh::class => AuthRefreshPostService::class,
+            DeleteCompany::class   => CompanyDeleteService::class,
+            GetCompany::class      => CompanyGetService::class,
+            GetCompanyAll::class   => CompanyGetManyService::class,
+            PostCompany::class     => CompanyPostService::class,
+            PutCompany::class      => CompanyPutService::class,
+            DeleteUser::class      => UserDeleteService::class,
+            GetUser::class         => UserGetService::class,
+            PostUser::class        => UserPostService::class,
+            PutUser::class         => UserPutService::class,
+        ];
+
+        foreach ($pins as $actionClass => $serviceClass) {
+            $container
+                ->set($actionClass, $actionClass)
+                ->setArgument('service', new LazyGet($serviceClass))
+            ;
+        }
     }
 
     /**
@@ -395,6 +459,31 @@ class ApiProvider extends AdrProvider
                 $logFile = $env->appPath($logPath) . '/' . $logName . '.log';
 
                 return new Logger($logName, ['main' => new Stream($logFile)]);
+            }
+        );
+    }
+
+    /**
+     * ApiResponder answers successful requests; ErrorResponder is final, so
+     * it is configured with ApiErrorResponder as its chain rather than
+     * subclassed. Application::handle() resolves ErrorResponder by class
+     * name, which is why it is registered under that key.
+     *
+     * @param Collection $container
+     *
+     * @return void
+     */
+    protected function registerResponders(Collection $container): void
+    {
+        $container->bind(ResponderContract::class, ApiResponder::class);
+
+        $container->set(
+            ErrorResponder::class,
+            function (Collection $ioc) {
+                /** @var LoggerContract $logger */
+                $logger = $ioc->get(LoggerContract::class);
+
+                return new ErrorResponder(new ApiErrorResponder(), $logger);
             }
         );
     }
